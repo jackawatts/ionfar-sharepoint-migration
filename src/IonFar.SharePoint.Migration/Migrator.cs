@@ -10,12 +10,12 @@ namespace IonFar.SharePoint.Migration
     public class Migrator : IMigrator
     {
         private readonly ClientContext _clientContext;
-        public ILogger Logger { get; set; }
+        private readonly ILogger _logger;
 
         public Migrator(ClientContext clientContext, ILogger logger)
         {
             _clientContext = clientContext;
-            Logger = logger;
+            _logger = logger;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace IonFar.SharePoint.Migration
         }
 
         /// <summary>
-        /// Migrates all IMigrations within the given assembly.
+        /// Migrates all IMigrations within the given assembly matching the given filter given the Type.FullName.
         /// </summary>
         /// <param name="assemblyContainingMigrations">The assembly containing the migrations to run.</param>
         /// <param name="filter">A function that accepts a Type.FullName and returns true if the given type is to be migrated, otherwise false.</param>
@@ -58,35 +58,25 @@ namespace IonFar.SharePoint.Migration
 
                 foreach (var migrationInfo in migrationsToRun)
                 {
-                        try
-                        {
-                            LogInfo(string.Format("Upgrading to {0} by running {1}...",
-                                migrationInfo.Version,
-                                migrationInfo.FullName));
+                    LogInfo(string.Format("Upgrading to {0} by running {1}...",
+                        migrationInfo.Version,
+                        migrationInfo.FullName));
 
-                            migrationInfo.ApplyMigration(_clientContext);
-                            var properties = _clientContext.Site.RootWeb.AllProperties;
-                            _clientContext.Load(properties);
-                            properties.FieldValues.Add(migrationInfo.Id, migrationInfo);
-                            
-                            _clientContext.ExecuteQuery();
-                            LogInfo("The migration is complete.");
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Error(ex,
-                                "The migration failed and the transaction has been rolled back. NOTE any changes to indexes are NON-TRANSACTIONAL and manual intervention may be required."
-                            );
+                    migrationInfo.ApplyMigration(_clientContext);
+                    var properties = _clientContext.Site.RootWeb.AllProperties;
+                    _clientContext.Load(properties);
+                    properties.FieldValues.Add(migrationInfo.Id, migrationInfo);
 
-                            throw;
-                        }
-                    }
+                    _clientContext.ExecuteQuery();
+                    LogInfo("The migration is complete.");
+
+                }
             }
             catch (Exception ex)
             {
-                Logger.Error(ex,
-                    "The migration process failed. NOTE any changes to indexes are NON-TRANSACTIONAL and manual intervention may be required."
-                    );
+                _logger.Error(ex,
+                    "The migration failed and the environment has been left in a partially complete state, manual intervention may be required."
+                );
                 throw;
             }
         }
@@ -105,7 +95,7 @@ namespace IonFar.SharePoint.Migration
         {
             var properties = _clientContext.Site.RootWeb.AllProperties;
             _clientContext.Load(properties);
-           var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith("")).Select(f => f.Value as MigrationInfo);
+            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix)).Select(f => f.Value as MigrationInfo);
 
             return appliedMigrations.ToArray();
         }
@@ -115,7 +105,7 @@ namespace IonFar.SharePoint.Migration
             var availableMigrations =
                 assemblyContainingMigrations
                     .GetExportedTypes()
-                    .Where(candidateType => typeof (IMigration).IsAssignableFrom(candidateType) &&
+                    .Where(candidateType => typeof(IMigration).IsAssignableFrom(candidateType) &&
                         !candidateType.IsAbstract &&
                         candidateType.IsClass &&
                         filter(candidateType.FullName))
@@ -127,8 +117,8 @@ namespace IonFar.SharePoint.Migration
 
         private void LogInfo(string message)
         {
-            if (Logger != null)
-                Logger.Information(message);
+            if (_logger != null)
+                _logger.Information(message);
         }
     }
 }

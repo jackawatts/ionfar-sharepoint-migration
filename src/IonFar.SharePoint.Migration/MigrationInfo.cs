@@ -9,6 +9,8 @@ namespace IonFar.SharePoint.Migration
     /// </summary>
     public class MigrationInfo
     {
+        public const string Prefix = "migrationinfos/";
+
         /// <summary>
         /// The type containing the Migration to be applied.
         /// </summary>
@@ -49,7 +51,7 @@ namespace IonFar.SharePoint.Migration
             }
 
             Version = migrationAttribute.Version;
-            Id = "migrationinfos/" + Version;
+            Id = Prefix + Version;
         }
 
         /// <summary>
