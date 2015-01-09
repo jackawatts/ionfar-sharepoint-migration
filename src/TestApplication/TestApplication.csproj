@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{00B17940-1B52-4A22-933E-A00C37A48093}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{48E143F9-8304-4A37-BB3F-ED1848771DF2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IonFar.SharePoint.Migration</RootNamespace>
-    <AssemblyName>IonFar.SharePoint.Migration</AssemblyName>
+    <RootNamespace>TestApplication</RootNamespace>
+    <AssemblyName>TestApplication</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -47,15 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMigration.cs" />
-    <Compile Include="IMigrator.cs" />
-    <Compile Include="Infrastructure\ConsoleLogger.cs" />
-    <Compile Include="Infrastructure\ILogger.cs" />
-    <Compile Include="Migration.cs" />
-    <Compile Include="MigrationAttribute.cs" />
-    <Compile Include="MigrationInfo.cs" />
-    <Compile Include="Migrator.cs" />
+    <Compile Include="Migrations\ShowTitle.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IonFar.SharePoint.Migration\IonFar.SharePoint.Migration.csproj">
+      <Project>{00B17940-1B52-4A22-933E-A00C37A48093}</Project>
+      <Name>IonFar.SharePoint.Migration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

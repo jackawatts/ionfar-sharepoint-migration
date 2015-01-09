@@ -63,10 +63,17 @@ namespace IonFar.SharePoint.Migration
                         migrationInfo.FullName));
 
                     migrationInfo.ApplyMigration(_clientContext);
-                    var properties = _clientContext.Site.RootWeb.AllProperties;
-                    _clientContext.Load(properties);
-                    properties.FieldValues.Add(migrationInfo.Id, migrationInfo);
+                    var rootWeb = _clientContext.Site.RootWeb;
 
+                    _clientContext.Load(rootWeb);
+
+                    var properties = rootWeb.AllProperties;
+                    _clientContext.Load(properties);
+                    _clientContext.ExecuteQuery();
+
+                    properties[migrationInfo.Id] = migrationInfo;
+                    
+                    rootWeb.Update();
                     _clientContext.ExecuteQuery();
                     LogInfo("The migration is complete.");
 
@@ -93,8 +100,15 @@ namespace IonFar.SharePoint.Migration
 
         private MigrationInfo[] GetAppliedMigrations()
         {
-            var properties = _clientContext.Site.RootWeb.AllProperties;
+            var rootWeb = _clientContext.Site.RootWeb;
+
+            _clientContext.Load(rootWeb);
+
+            var properties = rootWeb.AllProperties;
             _clientContext.Load(properties);
+
+            _clientContext.ExecuteQuery();
+
             var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix)).Select(f => f.Value as MigrationInfo);
 
             return appliedMigrations.ToArray();
