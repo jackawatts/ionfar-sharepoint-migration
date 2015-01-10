@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using IonFar.SharePoint.Migration;
 using IonFar.SharePoint.Migration.Infrastructure;
 using Microsoft.SharePoint.Client;
@@ -18,29 +13,38 @@ namespace TestApplication
 
         private static void Main(string[] args)
         {
-            _logger = new ConsoleLogger(); 
-            string webUrl = "";
-            string userName = "";
-            SecureString password = GetSecureStringFromString("");
+            _logger = new ConsoleLogger();
+
+            if (args.Length != 3)
+            {
+                _logger.Warning("Format is: TestApplication.exe username password sitecollectionurl");
+                return;
+            }
+
+            string username = args[0];
+            string password = args[1];
+            string webUrl = args[2];
+
+            SecureString securePassword = GetSecureStringFromString(password);
 
             using (var clientContext = new ClientContext(webUrl))
             {
-                clientContext.Credentials = new SharePointOnlineCredentials(userName, password);
+                clientContext.Credentials = new SharePointOnlineCredentials(username, securePassword);
 
                 var migrator = new Migrator(clientContext, _logger);
                 migrator.Migrate(Assembly.GetAssembly(typeof(ShowTitle)));
             }
         }
 
-        private static SecureString GetSecureStringFromString(string pass)
+        private static SecureString GetSecureStringFromString(string nonsecureString)
         {
-            var password = new SecureString();
-            foreach (var c in pass.ToCharArray())
+            var result = new SecureString();
+            foreach (char c in nonsecureString)
             {
-                password.AppendChar(c);
+                result.AppendChar(c);
             }
 
-            return password;
+            return result;
         }
     }
 }
