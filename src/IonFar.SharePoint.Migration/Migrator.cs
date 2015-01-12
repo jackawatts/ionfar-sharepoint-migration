@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using IonFar.SharePoint.Migration.Infrastructure;
 using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
 
 namespace IonFar.SharePoint.Migration
 {
@@ -71,7 +72,7 @@ namespace IonFar.SharePoint.Migration
                     _clientContext.Load(properties);
                     _clientContext.ExecuteQuery();
 
-                    properties[migrationInfo.Id] = migrationInfo;
+                    properties[migrationInfo.Id] = JsonConvert.SerializeObject(migrationInfo);
                     
                     rootWeb.Update();
                     _clientContext.ExecuteQuery();
@@ -109,7 +110,7 @@ namespace IonFar.SharePoint.Migration
 
             _clientContext.ExecuteQuery();
 
-            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix)).Select(f => f.Value as MigrationInfo);
+            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix)).Select(f => JsonConvert.DeserializeObject<MigrationInfo>(f.Value as string));
 
             return appliedMigrations.ToArray();
         }
