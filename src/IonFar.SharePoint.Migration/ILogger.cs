@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IonFar.SharePoint.Migration.Infrastructure
+namespace IonFar.SharePoint.Migration
 {
     public interface ILogger
     {

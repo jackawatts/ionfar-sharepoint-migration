@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Reflection;
 using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
 
 namespace IonFar.SharePoint.Migration
 {
     /// <summary>
-    /// The document stored in RavenDB to track a <see cref="Migration"/> applied to the database.
+    /// The value stored in the Property Bag to track a <see cref="Migration"/> applied to SharePoint.
     /// </summary>
     public class MigrationInfo
     {
@@ -14,7 +15,7 @@ namespace IonFar.SharePoint.Migration
         /// <summary>
         /// The type containing the Migration to be applied.
         /// </summary>
-        public Type MigrationType { get; private set; }
+        public string MigrationType { get; protected set; }
         /// <summary>
         /// The Id property of this instance.
         /// </summary>
@@ -24,13 +25,17 @@ namespace IonFar.SharePoint.Migration
         /// </summary>
         public long Version { get; protected set; }
         /// <summary>
+        /// Is this migration version needs to be always overriden
+        /// </summary>
+        public bool OverrideCurrentDeployment { get; protected set; }
+        /// <summary>
         /// Gets the FullName of the MigrationType.
         /// </summary>
         public string FullName { get; protected set; }
         /// <summary>
         /// Gets the UTC DateTime the migration was applied.
         /// </summary>
-        public DateTime AppliedAtUtc { get; set; }
+        public DateTime AppliedAtUtc { get; protected set; }
 
         protected MigrationInfo()
         {
@@ -42,26 +47,34 @@ namespace IonFar.SharePoint.Migration
         /// <param name="migrationType">The type containing the migration.</param>
         public MigrationInfo(Type migrationType)
         {
-            MigrationType = migrationType;
+            MigrationType = migrationType.FullName;
             FullName = migrationType.FullName;
             var migrationAttribute = migrationType.GetCustomAttribute<MigrationAttribute>(inherit: true);
-            if (migrationAttribute == null)
+            if (migrationAttribute != null)
             {
-                throw new InvalidOperationException(string.Format("The migration class {0} is missing its {1}.", migrationType.FullName, typeof(MigrationAttribute)));
+                Version = migrationAttribute.Version;
+                OverrideCurrentDeployment = migrationAttribute.OverrideCurrentDeployment;
+                Id = Prefix + Version;
             }
 
-            Version = migrationAttribute.Version;
-            Id = Prefix + Version;
         }
 
-        /// <summary>
-        /// Applies the MigrationType to the given <see cref="ClientContext"/>.
-        /// </summary>
-        /// <param name="clientContext">The <see cref="ClientContext"/> to apply the MigrationType to.</param>
-        public void ApplyMigration(ClientContext clientContext)
+        [JsonConstructor]
+        private MigrationInfo(string migrationType, string id, long version, bool overrideCurrentDeployment, string fullName, DateTime appliedAtUtc)
         {
-            var migration = (IMigration)Activator.CreateInstance(MigrationType);
-            migration.Up(clientContext);
+            MigrationType = migrationType;
+            Id = id;
+            Version = version;
+            OverrideCurrentDeployment = overrideCurrentDeployment;
+            FullName = fullName;
+            AppliedAtUtc = appliedAtUtc;
+        }
+
+        public void ApplyMigration(ClientContext clientContext, ILogger logger)
+        {
+            var migrationtype = Type.GetType(MigrationType);
+            var migration = (IMigration)Activator.CreateInstance(migrationtype);
+            migration.Up(clientContext, logger);
             AppliedAtUtc = DateTime.UtcNow;
         }
     }

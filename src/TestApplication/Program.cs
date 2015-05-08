@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Security;
 using IonFar.SharePoint.Migration;
-using IonFar.SharePoint.Migration.Infrastructure;
 using Microsoft.SharePoint.Client;
 using TestApplication.Migrations;
 

@@ -7,10 +7,16 @@ namespace IonFar.SharePoint.Migration
     /// </summary>
     public abstract class Migration : IMigration
     {
-        /// <summary>
-        /// Operations to be performed during the upgrade process.
-        /// </summary>
-        /// <param name="clientContext">The <see cref="ClientContext"/> to which the operations will be applied.</param>
-        public abstract void Up(ClientContext clientContext);
+        public abstract void Up(ClientContext clientContext, ILogger logger);
+
+        public virtual void Down(ClientContext clientContext, ILogger logger) { }
+
+        protected string BaseFolder
+        {
+            get
+            {
+                return System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            }
+        }
     }
 }

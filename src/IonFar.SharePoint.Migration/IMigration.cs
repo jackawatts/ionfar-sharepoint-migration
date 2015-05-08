@@ -4,6 +4,6 @@ namespace IonFar.SharePoint.Migration
 {
     public interface IMigration
     {
-        void Up(ClientContext clientContext);
+        void Up(ClientContext clientContext, ILogger logger);
     }
 }
