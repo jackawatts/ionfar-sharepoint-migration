@@ -47,7 +47,7 @@ namespace IonFar.SharePoint.Migration
         /// <param name="migrationType">The type containing the migration.</param>
         public MigrationInfo(Type migrationType)
         {
-            MigrationType = migrationType.FullName;
+            MigrationType = migrationType.AssemblyQualifiedName;
             FullName = migrationType.FullName;
             var migrationAttribute = migrationType.GetCustomAttribute<MigrationAttribute>(inherit: true);
             if (migrationAttribute != null)
