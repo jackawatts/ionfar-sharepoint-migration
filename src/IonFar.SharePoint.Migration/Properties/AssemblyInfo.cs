@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("IonFar.SharePoint.Migration")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Library that helps you to deploy and manage changes to a SharePoint Site collection using the client side object model (CSOM). Changes are recorded once run in a SharePoint environment so that only changes that need to be run will be applied.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("IonFar.SharePoint.Migration")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCopyright("Copyright © Jack Watts 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
