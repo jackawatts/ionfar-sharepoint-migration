@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- TFSBuildNumber.targets, Version 1.3 - August, 2014 -->
+  <!-- TFSBuildNumber.targets, Version 1.4 - May, 2015 -->
 
   <!-- Updates build numbers in projects based on the TFS build number.
   
@@ -18,6 +18,8 @@
          - If assembly info file needs to be Read Only (so that older TFS source
            control doesn't pick it up as a change) then can unset/set the
            read only flag on the file.
+         - Also updates AssemblyInformationalVersion, useful for NuGet 
+           packaging.
            
        To use:
        
@@ -50,6 +52,13 @@
           
        6. If your AssemblyInfo.cs file is usually read only, then you need to set
           the additional property <TFSSetReadOnly>true</TFSSetReadOnly> to handle this.
+          
+       7. For NuGet packaging support, add the following to AssemblyInfo.cs:
+       
+          [assembly: AssemblyInformationalVersion("1.0.0.0")]
+          
+          This will be replaced with the full version number from AssemblyFileVersion
+          (otherwise, NuGet uses AssemblyVersion, which only has major/minor numbers).
           
        NOTE: If you don't want to use GetMajorMinorFromCSharpAssemblyInfoFile,
        an alternative is to set the TFSMajorBuildNumber and TFSMinorBuildNumber
@@ -294,7 +303,12 @@
         TaskParameter="Value"
         PropertyName="FileVersionUpdatedInfo" />
     </CreateProperty>
-    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(FileVersionUpdatedInfo),"AssemblyVersion\s*\(.*?\)","AssemblyVersion($(AssemblyVersion))"))'>
+    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(FileVersionUpdatedInfo),"AssemblyInformationalVersion\s*\(.*?\)","AssemblyInformationalVersion($(AssemblyFileVersion))"))'>
+      <Output
+        TaskParameter="Value"
+        PropertyName="InformationalVersionUpdatedInfo" />
+    </CreateProperty>
+    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(InformationalVersionUpdatedInfo),"AssemblyVersion\s*\(.*?\)","AssemblyVersion($(AssemblyVersion))"))'>
       <Output
         TaskParameter="Value"
         PropertyName="FullUpdatedInfo" />
@@ -346,7 +360,12 @@
         TaskParameter="Value"
         PropertyName="FileVersionUpdatedInfo" />
     </CreateProperty>
-    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(FileVersionUpdatedInfo),"AssemblyVersion\s*\(.*?\)","AssemblyVersion($(AssemblyVersion))"))'>
+    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(FileVersionUpdatedInfo),"AssemblyInformationalVersion\s*\(.*?\)","AssemblyInformationalVersion($(AssemblyFileVersion))"))'>
+      <Output
+        TaskParameter="Value"
+        PropertyName="InformationalVersionUpdatedInfo" />
+    </CreateProperty>
+    <CreateProperty Value='$([System.Text.RegularExpressions.Regex]::Replace($(InformationalVersionUpdatedInfo),"AssemblyVersion\s*\(.*?\)","AssemblyVersion($(AssemblyVersion))"))'>
       <Output
         TaskParameter="Value"
         PropertyName="FullUpdatedInfo" />
