@@ -4,10 +4,10 @@ using Microsoft.SharePoint.Client;
 
 namespace TestApplication.Migrations
 {
-    [Migration(10001)]
+    [Migration(10001, true)]
     public class ShowTitle : IMigration
     {
-        public void Up(ClientContext clientContext)
+        public void Up(ClientContext clientContext, ILogger logger)
         {
             clientContext.Load(clientContext.Web, w => w.Title);
             clientContext.ExecuteQuery();

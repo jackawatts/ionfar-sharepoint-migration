@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using IonFar.SharePoint.Migration.Infrastructure;
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
 
@@ -39,31 +38,31 @@ namespace IonFar.SharePoint.Migration
         {
             try
             {
-                LogInfo("Starting upgrade against SharePoint instance at " + _clientContext.Url);
+                _logger.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
                 var availableMigrations = GetAvailableMigrations(assemblyContainingMigrations, filter);
-                var appliedMigrations = GetAppliedMigrations();
+                var appliedMigrations = GetAppliedMigrations(availableMigrations);
                 var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
 
                 if (!availableMigrations.Any())
                 {
-                    LogInfo("There are no migrations available in the specified assembly: " +
+                    _logger.Information("There are no migrations available in the specified assembly: " +
                             assemblyContainingMigrations.FullName);
                     return;
                 }
 
                 if (!migrationsToRun.Any())
                 {
-                    LogInfo("The SharePoint instance is up to date, there are no migrations to run.");
+                    _logger.Information("The SharePoint instance is up to date, there are no migrations to run.");
                     return;
                 }
 
                 foreach (var migrationInfo in migrationsToRun)
                 {
-                    LogInfo(string.Format("Upgrading to {0} by running {1}...",
+                    _logger.Information(string.Format("Upgrading to {0} by running {1}...",
                         migrationInfo.Version,
                         migrationInfo.FullName));
 
-                    migrationInfo.ApplyMigration(_clientContext);
+                    migrationInfo.ApplyMigration(_clientContext, _logger);
                     var rootWeb = _clientContext.Site.RootWeb;
 
                     _clientContext.Load(rootWeb);
@@ -76,7 +75,7 @@ namespace IonFar.SharePoint.Migration
                     
                     rootWeb.Update();
                     _clientContext.ExecuteQuery();
-                    LogInfo("The migration is complete.");
+                    _logger.Information("The migration is complete.");
 
                 }
             }
@@ -94,13 +93,15 @@ namespace IonFar.SharePoint.Migration
             var appliedVersions = new HashSet<long>(appliedMigrations.Select(m => m.Version));
 
             return availableMigrations
-                .Where(availableMigration => !appliedVersions.Contains(availableMigration.Version))
+                .Where(availableMigration => !appliedVersions.Contains(availableMigration.Version) 
+                    || availableMigration.OverrideCurrentDeployment)
                 .OrderBy(migrationToRun => migrationToRun.Version)
                 .ToArray();
         }
 
-        private MigrationInfo[] GetAppliedMigrations()
+        private MigrationInfo[] GetAppliedMigrations(MigrationInfo[] availableMigrations)
         {
+            var availableMigrationsIds = availableMigrations.Select(am => am.Id).ToList();
             var rootWeb = _clientContext.Site.RootWeb;
 
             _clientContext.Load(rootWeb);
@@ -110,7 +111,9 @@ namespace IonFar.SharePoint.Migration
 
             _clientContext.ExecuteQuery();
 
-            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix)).Select(f => JsonConvert.DeserializeObject<MigrationInfo>(f.Value as string));
+            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix))
+                .Where(f => availableMigrationsIds.Contains(f.Key))
+                .Select(f => JsonConvert.DeserializeObject(f.Value.ToString(), typeof(MigrationInfo)) as MigrationInfo);
 
             return appliedMigrations.ToArray();
         }
@@ -123,17 +126,13 @@ namespace IonFar.SharePoint.Migration
                     .Where(candidateType => typeof(IMigration).IsAssignableFrom(candidateType) &&
                         !candidateType.IsAbstract &&
                         candidateType.IsClass &&
-                        filter(candidateType.FullName))
+                        filter(candidateType.FullName)
+                        )
                     .Select(candidateType => new MigrationInfo(candidateType))
+                    .Where(migrationinfo => migrationinfo.Version > 0)
                     .ToArray();
 
             return availableMigrations;
-        }
-
-        private void LogInfo(string message)
-        {
-            if (_logger != null)
-                _logger.Information(message);
         }
     }
 }

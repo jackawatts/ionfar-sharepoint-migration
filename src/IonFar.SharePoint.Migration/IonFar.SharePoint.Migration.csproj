@@ -93,10 +93,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogger.cs" />
     <Compile Include="IMigration.cs" />
     <Compile Include="IMigrator.cs" />
-    <Compile Include="Infrastructure\ConsoleLogger.cs" />
-    <Compile Include="Infrastructure\ILogger.cs" />
+    <Compile Include="ConsoleLogger.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationInfo.cs" />
