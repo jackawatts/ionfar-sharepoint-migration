@@ -7,9 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IonFar.SharePoint.Migration
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{48E143F9-8304-4A37-BB3F-ED1848771DF2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0998076-31A7-4E99-9AA8-DDAEB3CF1A54}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1337F007-334E-4B7D-8A9F-FD2FA666E303}"
 	ProjectSection(SolutionItems) = preProject
-		TFSBuildNumber.targets = TFSBuildNumber.targets
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{44E9C486-6091-410D-8B4F-A679C9F3C35B}"
+	ProjectSection(SolutionItems) = preProject
+		CreatePackage.cmd = CreatePackage.cmd
 	EndProjectSection
 EndProject
 Global

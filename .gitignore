@@ -158,3 +158,6 @@ $RECYCLE.BIN/
 # =========================
 # Version number file
 Version.txt
+
+# Generated NuGet package
+*.nupkg
