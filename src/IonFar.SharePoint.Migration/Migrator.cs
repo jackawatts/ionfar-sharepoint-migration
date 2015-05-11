@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace IonFar.SharePoint.Migration
 {
@@ -39,6 +40,10 @@ namespace IonFar.SharePoint.Migration
             try
             {
                 _logger.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
+                var assembly = Assembly.GetExecutingAssembly();
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                _logger.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
+
                 var availableMigrations = GetAvailableMigrations(assemblyContainingMigrations, filter);
                 var appliedMigrations = GetAppliedMigrations(availableMigrations);
                 var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
