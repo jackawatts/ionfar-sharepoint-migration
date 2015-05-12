@@ -24,6 +24,7 @@ namespace IonFar.SharePoint.Migration
         /// </summary>
         public void Migrate()
         {
+            _configuration.Validate();
             try
             {
                 _configuration.Log.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
