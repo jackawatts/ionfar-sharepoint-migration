@@ -6,19 +6,19 @@ namespace IonFar.SharePoint.Migration
     {
         public void Information(string message, params object[] args)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(message, args);
         }
 
         public void Warning(string message, params object[] args)
         {
-            Console.WriteLine(message);
+            Console.WriteLine(message, args);
         }
 
         public void Error(Exception ex, string message, params object[] args)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine(ex.StackTrace);
-            Console.WriteLine(message);
+            Console.WriteLine(message, args);
         }
     }
 }
