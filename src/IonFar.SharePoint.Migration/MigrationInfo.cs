@@ -10,28 +10,26 @@ namespace IonFar.SharePoint.Migration
     /// </summary>
     public class MigrationInfo
     {
-        public const string Prefix = "migrationinfos/";
-
         /// <summary>
         /// The type containing the Migration to be applied.
         /// </summary>
         public string MigrationType { get; protected set; }
-        /// <summary>
-        /// The Id property of this instance.
-        /// </summary>
-        public string Id { get; protected set; }
+        
         /// <summary>
         /// Get the Version of <see cref="MigrationAttribute"/> associated with the MigrationType.
         /// </summary>
         public long Version { get; protected set; }
+        
         /// <summary>
         /// Is this migration version needs to be always overriden
         /// </summary>
         public bool OverrideCurrentDeployment { get; protected set; }
+        
         /// <summary>
         /// Gets the FullName of the MigrationType.
         /// </summary>
         public string FullName { get; protected set; }
+        
         /// <summary>
         /// Gets the UTC DateTime the migration was applied.
         /// </summary>
@@ -54,16 +52,14 @@ namespace IonFar.SharePoint.Migration
             {
                 Version = migrationAttribute.Version;
                 OverrideCurrentDeployment = migrationAttribute.OverrideCurrentDeployment;
-                Id = Prefix + Version;
             }
 
         }
 
         [JsonConstructor]
-        private MigrationInfo(string migrationType, string id, long version, bool overrideCurrentDeployment, string fullName, DateTime appliedAtUtc)
+        private MigrationInfo(string migrationType, long version, bool overrideCurrentDeployment, string fullName, DateTime appliedAtUtc)
         {
             MigrationType = migrationType;
-            Id = id;
             Version = version;
             OverrideCurrentDeployment = overrideCurrentDeployment;
             FullName = fullName;

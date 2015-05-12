@@ -13,19 +13,26 @@ namespace IonFar.SharePoint.Migration.Providers
     /// </summary>
     public class PropertyBagJournal : IJournal
     {
-        //public const string DefaultPrefix = "migrationinfos";
+        public const string DefaultPrefix = "migrationinfos/";
 
-        //string _prefix;
+        string _prefix;
 
-        //public PropertyBagJournal()
-        //    : this(DefaultPrefix)
-        //{
-        //}
+        /// <summary>
+        /// Creates a property bag journal with the default prefix.
+        /// </summary>
+        public PropertyBagJournal()
+            : this(DefaultPrefix)
+        {
+        }
 
-        //public PropertyBagJournal(string prefix)
-        //{
-        //    _prefix = prefix;
-        //}
+        /// <summary>
+        /// Creates a property bag journal with the specified prefix.
+        /// </summary>
+        /// <param name="prefix">Property key prefix</param>
+        public PropertyBagJournal(string prefix)
+        {
+            _prefix = prefix;
+        }
 
 
         /// <summary>
@@ -45,7 +52,7 @@ namespace IonFar.SharePoint.Migration.Providers
 
             clientContext.ExecuteQuery();
 
-            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix));
+            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(_prefix));
 
             foreach (var migration in appliedMigrations)
             {
@@ -80,7 +87,8 @@ namespace IonFar.SharePoint.Migration.Providers
             clientContext.Load(properties);
             clientContext.ExecuteQuery();
 
-            properties[migrationInfo.Id] = JsonConvert.SerializeObject(migrationInfo);
+            var id = _prefix + migrationInfo.Version;
+            properties[id] = JsonConvert.SerializeObject(migrationInfo);
 
             rootWeb.Update();
             clientContext.ExecuteQuery();
