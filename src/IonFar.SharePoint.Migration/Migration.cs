@@ -9,8 +9,6 @@ namespace IonFar.SharePoint.Migration
     {
         public abstract void Up(ClientContext clientContext, IUpgradeLog logger);
 
-        public virtual void Down(ClientContext clientContext, IUpgradeLog logger) { }
-
         protected string BaseFolder
         {
             get
