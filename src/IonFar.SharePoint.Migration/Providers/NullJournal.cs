@@ -16,7 +16,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// Always returns an empty array.
         /// </summary>
         /// <param name="clientContext">Context to the SharePoint server</param>
-        public IEnumerable<MigrationInfo> GetExecutedMigrations(ClientContext clientContext)
+        public IEnumerable<MigrationInfo> GetExecutedMigrations(IContextManager contextManager, IUpgradeLog log)
         {
             return new MigrationInfo[0];
         }
@@ -26,7 +26,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// </summary>
         /// <param name="clientContext">Context to the SharePoint server</param>
         /// <param name="migration">Migration that has been run</param>
-        public void StoreExecutedMigration(ClientContext clientContext, MigrationInfo migrationInfo)
+        public void StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, MigrationInfo migrationInfo)
         {
         }
     }

@@ -39,9 +39,11 @@ namespace IonFar.SharePoint.Migration.Providers
         /// Gets the migrations that have already been executed.
         /// </summary>
         /// <param name="clientContext">Context to the SharePoint server</param>
-        public IEnumerable<MigrationInfo> GetExecutedMigrations(ClientContext clientContext)
+        public IEnumerable<MigrationInfo> GetExecutedMigrations(IContextManager contextManager, IUpgradeLog log)
         {
             //var availableMigrationsIds = availableMigrations.Select(am => am.Id).ToList();
+
+            var clientContext = contextManager.CurrentContext;
 
             var rootWeb = clientContext.Site.RootWeb;
 
@@ -63,7 +65,7 @@ namespace IonFar.SharePoint.Migration.Providers
                 }
                 catch (Exception ex)
                 {
-                    // Ignore ? (should probably log)
+                    log.Warning("Error deserializing migration '{0}'. Exception: {1}", migration.Key, ex);
                 }
                 if (migrationInfo != null)
                 {
@@ -77,8 +79,10 @@ namespace IonFar.SharePoint.Migration.Providers
         /// </summary>
         /// <param name="clientContext">Context to the SharePoint server</param>
         /// <param name="migration">Migration that has been run</param>
-        public void StoreExecutedMigration(ClientContext clientContext, MigrationInfo migrationInfo)
+        public void StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, MigrationInfo migrationInfo)
         {
+            var clientContext = contextManager.CurrentContext;
+
             var rootWeb = clientContext.Site.RootWeb;
 
             clientContext.Load(rootWeb);

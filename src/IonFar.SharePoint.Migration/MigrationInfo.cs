@@ -66,11 +66,13 @@ namespace IonFar.SharePoint.Migration
             AppliedAtUtc = appliedAtUtc;
         }
 
-        public void ApplyMigration(ClientContext clientContext, IUpgradeLog logger)
+        public void ApplyMigration(IContextManager contextManager, IUpgradeLog logger)
         {
             var migrationtype = Type.GetType(MigrationType);
             var migration = (IMigration)Activator.CreateInstance(migrationtype);
-            migration.Up(clientContext, logger);
+
+            migration.Up(contextManager.CurrentContext, logger);
+
             AppliedAtUtc = DateTime.UtcNow;
         }
     }

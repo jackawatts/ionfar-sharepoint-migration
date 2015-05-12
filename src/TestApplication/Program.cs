@@ -5,21 +5,21 @@ using Microsoft.SharePoint.Client;
 using TestApplication.Migrations;
 using System;
 using IonFar.SharePoint.Migration.Providers;
+using System.Net;
 
 namespace TestApplication
 {
     internal class Program
     {
-        private static IUpgradeLog _logger;
-
         private static void Main(string[] args)
         {
+            var config = new MigratorConfiguration() {};
             //_logger = new ConsoleUpgradeLog();
-            _logger = new TraceUpgradeLog();
+            //config.Log = new TraceUpgradeLog();
 
             if (args.Length != 3)
             {
-                _logger.Warning("Format is: TestApplication.exe username password sitecollectionurl");
+                Console.WriteLine("Format is: TestApplication.exe username password sitecollectionurl");
                 return;
             }
 
@@ -28,19 +28,20 @@ namespace TestApplication
             string webUrl = args[2];
 
             SecureString securePassword = GetSecureStringFromString(password);
+            ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
-            using (var clientContext = new ClientContext(webUrl))
-            {
-                clientContext.Credentials = new SharePointOnlineCredentials(username, securePassword);
+            config.ContextManager = new BasicContextManager(webUrl, credentials);
 
-                var config = new MigratorConfiguration() { Log = _logger };
-                config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
-                //config.Journal = new NullJournal();
+            config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+            //config.Journal = new NullJournal();
 
-                var migrator = new Migrator(clientContext, config);
+            var migrator = new Migrator(config);
 
-                migrator.Migrate();
-            }
+            migrator.Migrate();
+
+            //using (var clientContext = new ClientContext(webUrl))
+            //{
+            //}
 
             Console.WriteLine("Done");
             Console.ReadLine();

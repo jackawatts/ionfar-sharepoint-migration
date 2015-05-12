@@ -10,13 +10,11 @@ namespace IonFar.SharePoint.Migration
 {
     public class Migrator
     {
-        private readonly ClientContext _clientContext;
         private readonly MigratorConfiguration _configuration;
 
-        public Migrator(ClientContext clientContext, MigratorConfiguration configuration)
+        public Migrator(MigratorConfiguration configuration)
         {
             _configuration = configuration;
-            _clientContext = clientContext;
         }
 
         /// <summary>
@@ -27,41 +25,46 @@ namespace IonFar.SharePoint.Migration
             _configuration.Validate();
             try
             {
-                _configuration.Log.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
-                var assembly = Assembly.GetExecutingAssembly();
-                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
-
-                var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations());
-
-                var appliedMigrations = _configuration.Journal.GetExecutedMigrations(_clientContext);
-
-                var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
-
-                if (!availableMigrations.Any())
+                using (_configuration.ContextManager.ContextScope(_configuration.Log))
                 {
-                    _configuration.Log.Information("There are no migrations from any of the providers.");
-                    return;
-                }
+                    var clientContext = _configuration.ContextManager.CurrentContext;
 
-                if (!migrationsToRun.Any())
-                {
-                    _configuration.Log.Information("The SharePoint instance is up to date, there are no migrations to run.");
-                    return;
-                }
+                    _configuration.Log.Information("Starting upgrade against SharePoint instance at " + clientContext.Url);
+                    var assembly = Assembly.GetExecutingAssembly();
+                    var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                    _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
 
-                foreach (var migrationInfo in migrationsToRun)
-                {
-                    _configuration.Log.Information(string.Format("Upgrading to {0} by running {1}...",
-                        migrationInfo.Version,
-                        migrationInfo.FullName));
+                    var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations());
 
-                    migrationInfo.ApplyMigration(_clientContext, _configuration.Log);
+                    var appliedMigrations = _configuration.Journal.GetExecutedMigrations(_configuration.ContextManager, _configuration.Log);
 
-                    _configuration.Journal.StoreExecutedMigration(_clientContext, migrationInfo);
+                    var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
 
-                    _configuration.Log.Information("The migration is complete.");
+                    if (!availableMigrations.Any())
+                    {
+                        _configuration.Log.Information("There are no migrations from any of the providers.");
+                        return;
+                    }
 
+                    if (!migrationsToRun.Any())
+                    {
+                        _configuration.Log.Information("The SharePoint instance is up to date, there are no migrations to run.");
+                        return;
+                    }
+
+                    foreach (var migrationInfo in migrationsToRun)
+                    {
+                        _configuration.Log.Information(string.Format("Upgrading to {0} by running {1}...",
+                            migrationInfo.Version,
+                            migrationInfo.FullName));
+
+                        migrationInfo.ApplyMigration(_configuration.ContextManager, _configuration.Log);
+
+                        _configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migrationInfo);
+
+                        _configuration.Log.Information("The migration is complete.");
+
+                    }
                 }
             }
             catch (Exception ex)

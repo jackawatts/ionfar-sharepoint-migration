@@ -24,6 +24,11 @@ namespace IonFar.SharePoint.Migration
         }
 
         /// <summary>
+        /// Gets or sets the context manager, which provides to connection to SharePoint.
+        /// </summary>
+        public IContextManager ContextManager { get; set; }
+
+        /// <summary>
         /// Gets or sets the journal, which tracks the migrations that have already been run.
         /// </summary>
         public IJournal Journal { get; set; }
@@ -46,7 +51,7 @@ namespace IonFar.SharePoint.Migration
             if (Log == null) throw new ArgumentException("A log is required to run migrations. Please leave at the default Trace logger, or replace with another logger.");
             if (Journal == null) throw new ArgumentException("A journal is required. Please leave the default Journal, or replace with another.");
             if (MigrationProviders.Count == 0) throw new ArgumentException("No migration providers were added. Please add an assembly (or other) migration provider.");
-            //if (ConnectionManager == null) throw new ArgumentException("The ConnectionManager is null. What do you expect to upgrade?");
+            if (ContextManager == null) throw new ArgumentException("A context manager is required. Please leave the default Context Manager, or replace with another.");
         }
     }
 }

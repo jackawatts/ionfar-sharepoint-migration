@@ -95,12 +95,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IContextManager.cs" />
     <Compile Include="IJournal.cs" />
     <Compile Include="IMigrationProvider.cs" />
     <Compile Include="IUpgradeLog.cs" />
     <Compile Include="IMigration.cs" />
     <Compile Include="Providers\AssemblyMigrationProvider.cs" />
     <Compile Include="MigratorConfiguration.cs" />
+    <Compile Include="Providers\BasicContextManager.cs" />
     <Compile Include="Providers\ConsoleUpgradeLog.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
