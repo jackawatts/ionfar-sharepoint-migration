@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Output
+namespace IonFar.SharePoint.Migration.Providers
 {
     /// <summary>
     /// A log that writes to System.Diagnostics.

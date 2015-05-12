@@ -34,7 +34,8 @@ namespace IonFar.SharePoint.Migration
 
                 var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations());
 
-                var appliedMigrations = GetAppliedMigrations(availableMigrations.ToArray());
+                var appliedMigrations = _configuration.Journal.GetExecutedMigrations(_clientContext);
+
                 var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
 
                 if (!availableMigrations.Any())
@@ -56,18 +57,9 @@ namespace IonFar.SharePoint.Migration
                         migrationInfo.FullName));
 
                     migrationInfo.ApplyMigration(_clientContext, _configuration.Log);
-                    var rootWeb = _clientContext.Site.RootWeb;
 
-                    _clientContext.Load(rootWeb);
+                    _configuration.Journal.StoreExecutedMigration(_clientContext, migrationInfo);
 
-                    var properties = rootWeb.AllProperties;
-                    _clientContext.Load(properties);
-                    _clientContext.ExecuteQuery();
-
-                    properties[migrationInfo.Id] = JsonConvert.SerializeObject(migrationInfo);
-                    
-                    rootWeb.Update();
-                    _clientContext.ExecuteQuery();
                     _configuration.Log.Information("The migration is complete.");
 
                 }
@@ -92,23 +84,5 @@ namespace IonFar.SharePoint.Migration
                 .ToArray();
         }
 
-        private MigrationInfo[] GetAppliedMigrations(MigrationInfo[] availableMigrations)
-        {
-            var availableMigrationsIds = availableMigrations.Select(am => am.Id).ToList();
-            var rootWeb = _clientContext.Site.RootWeb;
-
-            _clientContext.Load(rootWeb);
-
-            var properties = rootWeb.AllProperties;
-            _clientContext.Load(properties);
-
-            _clientContext.ExecuteQuery();
-
-            var appliedMigrations = properties.FieldValues.Where(f => f.Key.StartsWith(MigrationInfo.Prefix))
-                .Where(f => availableMigrationsIds.Contains(f.Key))
-                .Select(f => JsonConvert.DeserializeObject(f.Value.ToString(), typeof(MigrationInfo)) as MigrationInfo);
-
-            return appliedMigrations.ToArray();
-        }
     }
 }

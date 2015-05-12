@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.MigrationProviders
+namespace IonFar.SharePoint.Migration.Providers
 {
     /// <summary>
     /// Provides thes migrations contained in an assembly.

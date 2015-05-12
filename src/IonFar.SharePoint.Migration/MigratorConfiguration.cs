@@ -1,4 +1,4 @@
-﻿using IonFar.SharePoint.Migration.Output;
+﻿using IonFar.SharePoint.Migration.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,13 @@ namespace IonFar.SharePoint.Migration
         public MigratorConfiguration()
         {
             Log = new TraceUpgradeLog();
+            Journal = new PropertyBagJournal();
         }
+
+        /// <summary>
+        /// Gets or sets the journal, which tracks the migrations that have already been run.
+        /// </summary>
+        public IJournal Journal { get; set; }
 
         /// <summary>
         /// Gets or sets which log captures details about the upgrade.
@@ -38,7 +44,7 @@ namespace IonFar.SharePoint.Migration
         public void Validate()
         {
             if (Log == null) throw new ArgumentException("A log is required to run migrations. Please leave at the default Trace logger, or replace with another logger.");
-            //if (Journal == null) throw new ArgumentException("A journal is required. Please use one of the Journal extension methods before calling Build()");
+            if (Journal == null) throw new ArgumentException("A journal is required. Please leave the default Journal, or replace with another.");
             if (MigrationProviders.Count == 0) throw new ArgumentException("No migration providers were added. Please add an assembly (or other) migration provider.");
             //if (ConnectionManager == null) throw new ArgumentException("The ConnectionManager is null. What do you expect to upgrade?");
         }

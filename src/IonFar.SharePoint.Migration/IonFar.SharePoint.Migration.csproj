@@ -95,17 +95,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IJournal.cs" />
     <Compile Include="IMigrationProvider.cs" />
     <Compile Include="IUpgradeLog.cs" />
     <Compile Include="IMigration.cs" />
-    <Compile Include="MigrationProviders\AssemblyMigrationProvider.cs" />
+    <Compile Include="Providers\AssemblyMigrationProvider.cs" />
     <Compile Include="MigratorConfiguration.cs" />
-    <Compile Include="Output\ConsoleUpgradeLog.cs" />
+    <Compile Include="Providers\ConsoleUpgradeLog.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationInfo.cs" />
     <Compile Include="Migrator.cs" />
-    <Compile Include="Output\TraceUpgradeLog.cs" />
+    <Compile Include="Providers\PropertyBagJournal.cs" />
+    <Compile Include="Providers\TraceUpgradeLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

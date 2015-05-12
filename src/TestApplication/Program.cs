@@ -3,9 +3,8 @@ using System.Security;
 using IonFar.SharePoint.Migration;
 using Microsoft.SharePoint.Client;
 using TestApplication.Migrations;
-using IonFar.SharePoint.Migration.Output;
 using System;
-using IonFar.SharePoint.Migration.MigrationProviders;
+using IonFar.SharePoint.Migration.Providers;
 
 namespace TestApplication
 {
