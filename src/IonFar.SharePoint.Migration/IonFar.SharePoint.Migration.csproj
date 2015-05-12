@@ -95,9 +95,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMigrationProvider.cs" />
     <Compile Include="IUpgradeLog.cs" />
     <Compile Include="IMigration.cs" />
-    <Compile Include="IMigrator.cs" />
+    <Compile Include="MigrationProviders\AssemblyMigrationProvider.cs" />
     <Compile Include="MigratorConfiguration.cs" />
     <Compile Include="Output\ConsoleUpgradeLog.cs" />
     <Compile Include="Migration.cs" />

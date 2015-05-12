@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace IonFar.SharePoint.Migration
 {
-    public class Migrator : IMigrator
+    public class Migrator
     {
         private readonly ClientContext _clientContext;
         private readonly MigratorConfiguration _configuration;
@@ -20,22 +20,9 @@ namespace IonFar.SharePoint.Migration
         }
 
         /// <summary>
-        /// Migrates all IMigrations within the given assembly.
+        /// Executes the migration.
         /// </summary>
-        /// <param name="assemblyContainingMigrations">The assembly containing the migrations to run.</param>
-        /// <remarks>Migrations must be decorated with a <see cref="MigrationAttribute"/></remarks>
-        public void Migrate(Assembly assemblyContainingMigrations)
-        {
-            Migrate(assemblyContainingMigrations, name => true);
-        }
-
-        /// <summary>
-        /// Migrates all IMigrations within the given assembly matching the given filter given the Type.FullName.
-        /// </summary>
-        /// <param name="assemblyContainingMigrations">The assembly containing the migrations to run.</param>
-        /// <param name="filter">A function that accepts a Type.FullName and returns true if the given type is to be migrated, otherwise false.</param>
-        /// <remarks>Migrations must be decorated with a <see cref="MigrationAttribute"/></remarks>
-        public void Migrate(Assembly assemblyContainingMigrations, Func<string, bool> filter)
+        public void Migrate()
         {
             try
             {
@@ -44,14 +31,14 @@ namespace IonFar.SharePoint.Migration
                 var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
 
-                var availableMigrations = GetAvailableMigrations(assemblyContainingMigrations, filter);
-                var appliedMigrations = GetAppliedMigrations(availableMigrations);
+                var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations());
+
+                var appliedMigrations = GetAppliedMigrations(availableMigrations.ToArray());
                 var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
 
                 if (!availableMigrations.Any())
                 {
-                    _configuration.Log.Information("There are no migrations available in the specified assembly: " +
-                            assemblyContainingMigrations.FullName);
+                    _configuration.Log.Information("There are no migrations from any of the providers.");
                     return;
                 }
 
@@ -121,23 +108,6 @@ namespace IonFar.SharePoint.Migration
                 .Select(f => JsonConvert.DeserializeObject(f.Value.ToString(), typeof(MigrationInfo)) as MigrationInfo);
 
             return appliedMigrations.ToArray();
-        }
-
-        private MigrationInfo[] GetAvailableMigrations(Assembly assemblyContainingMigrations, Func<string, bool> filter)
-        {
-            var availableMigrations =
-                assemblyContainingMigrations
-                    .GetExportedTypes()
-                    .Where(candidateType => typeof(IMigration).IsAssignableFrom(candidateType) &&
-                        !candidateType.IsAbstract &&
-                        candidateType.IsClass &&
-                        filter(candidateType.FullName)
-                        )
-                    .Select(candidateType => new MigrationInfo(candidateType))
-                    .Where(migrationinfo => migrationinfo.Version > 0)
-                    .ToArray();
-
-            return availableMigrations;
         }
     }
 }

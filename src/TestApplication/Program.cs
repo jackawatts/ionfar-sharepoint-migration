@@ -5,6 +5,7 @@ using Microsoft.SharePoint.Client;
 using TestApplication.Migrations;
 using IonFar.SharePoint.Migration.Output;
 using System;
+using IonFar.SharePoint.Migration.MigrationProviders;
 
 namespace TestApplication
 {
@@ -33,11 +34,16 @@ namespace TestApplication
             {
                 clientContext.Credentials = new SharePointOnlineCredentials(username, securePassword);
 
-                var migrator = new Migrator(clientContext, new MigratorConfiguration() { Log = _logger });
-                migrator.Migrate(Assembly.GetAssembly(typeof(ShowTitle)));
+                var config = new MigratorConfiguration() { Log = _logger };
+                config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+
+                var migrator = new Migrator(clientContext, config);
+
+                migrator.Migrate();
             }
 
-            //Console.ReadLine();
+            Console.WriteLine("Done");
+            Console.ReadLine();
         }
 
         private static SecureString GetSecureStringFromString(string nonsecureString)
