@@ -3,16 +3,19 @@ using System.Security;
 using IonFar.SharePoint.Migration;
 using Microsoft.SharePoint.Client;
 using TestApplication.Migrations;
+using IonFar.SharePoint.Migration.Output;
+using System;
 
 namespace TestApplication
 {
     internal class Program
     {
-        private static ILogger _logger;
+        private static IUpgradeLog _logger;
 
         private static void Main(string[] args)
         {
-            _logger = new ConsoleLogger();
+            //_logger = new ConsoleUpgradeLog();
+            _logger = new TraceUpgradeLog();
 
             if (args.Length != 3)
             {
@@ -30,9 +33,11 @@ namespace TestApplication
             {
                 clientContext.Credentials = new SharePointOnlineCredentials(username, securePassword);
 
-                var migrator = new Migrator(clientContext, _logger);
+                var migrator = new Migrator(clientContext, new MigratorConfiguration() { Log = _logger });
                 migrator.Migrate(Assembly.GetAssembly(typeof(ShowTitle)));
             }
+
+            //Console.ReadLine();
         }
 
         private static SecureString GetSecureStringFromString(string nonsecureString)

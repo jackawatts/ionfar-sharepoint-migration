@@ -95,14 +95,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ILogger.cs" />
+    <Compile Include="IUpgradeLog.cs" />
     <Compile Include="IMigration.cs" />
     <Compile Include="IMigrator.cs" />
-    <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="MigratorConfiguration.cs" />
+    <Compile Include="Output\ConsoleUpgradeLog.cs" />
     <Compile Include="Migration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationInfo.cs" />
     <Compile Include="Migrator.cs" />
+    <Compile Include="Output\TraceUpgradeLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,11 +129,9 @@
   <PropertyGroup>
     <TFSBaseBuildYear>2015</TFSBaseBuildYear>
   </PropertyGroup>
-  <Import Project="..\TFSBuildNumber.targets"/>
-  <Target Name="BeforeBuild"
-     DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
+  <Import Project="..\TFSBuildNumber.targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
   </Target>
-  <Target Name="AfterBuild"
-     DependsOnTargets="ResetCSharpAssemblyInfoFile">
+  <Target Name="AfterBuild" DependsOnTargets="ResetCSharpAssemblyInfoFile">
   </Target>
 </Project>

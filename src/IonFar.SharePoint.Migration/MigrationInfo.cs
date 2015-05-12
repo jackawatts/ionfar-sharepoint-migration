@@ -70,7 +70,7 @@ namespace IonFar.SharePoint.Migration
             AppliedAtUtc = appliedAtUtc;
         }
 
-        public void ApplyMigration(ClientContext clientContext, ILogger logger)
+        public void ApplyMigration(ClientContext clientContext, IUpgradeLog logger)
         {
             var migrationtype = Type.GetType(MigrationType);
             var migration = (IMigration)Activator.CreateInstance(migrationtype);

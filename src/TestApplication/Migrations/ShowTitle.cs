@@ -7,7 +7,7 @@ namespace TestApplication.Migrations
     [Migration(10001, true)]
     public class ShowTitle : IMigration
     {
-        public void Up(ClientContext clientContext, ILogger logger)
+        public void Up(ClientContext clientContext, IUpgradeLog logger)
         {
             clientContext.Load(clientContext.Web, w => w.Title);
             clientContext.ExecuteQuery();

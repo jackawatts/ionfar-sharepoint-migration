@@ -11,12 +11,12 @@ namespace IonFar.SharePoint.Migration
     public class Migrator : IMigrator
     {
         private readonly ClientContext _clientContext;
-        private readonly ILogger _logger;
+        private readonly MigratorConfiguration _configuration;
 
-        public Migrator(ClientContext clientContext, ILogger logger)
+        public Migrator(ClientContext clientContext, MigratorConfiguration configuration)
         {
+            _configuration = configuration;
             _clientContext = clientContext;
-            _logger = logger;
         }
 
         /// <summary>
@@ -39,10 +39,10 @@ namespace IonFar.SharePoint.Migration
         {
             try
             {
-                _logger.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
+                _configuration.Log.Information("Starting upgrade against SharePoint instance at " + _clientContext.Url);
                 var assembly = Assembly.GetExecutingAssembly();
                 var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _logger.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
+                _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
 
                 var availableMigrations = GetAvailableMigrations(assemblyContainingMigrations, filter);
                 var appliedMigrations = GetAppliedMigrations(availableMigrations);
@@ -50,24 +50,24 @@ namespace IonFar.SharePoint.Migration
 
                 if (!availableMigrations.Any())
                 {
-                    _logger.Information("There are no migrations available in the specified assembly: " +
+                    _configuration.Log.Information("There are no migrations available in the specified assembly: " +
                             assemblyContainingMigrations.FullName);
                     return;
                 }
 
                 if (!migrationsToRun.Any())
                 {
-                    _logger.Information("The SharePoint instance is up to date, there are no migrations to run.");
+                    _configuration.Log.Information("The SharePoint instance is up to date, there are no migrations to run.");
                     return;
                 }
 
                 foreach (var migrationInfo in migrationsToRun)
                 {
-                    _logger.Information(string.Format("Upgrading to {0} by running {1}...",
+                    _configuration.Log.Information(string.Format("Upgrading to {0} by running {1}...",
                         migrationInfo.Version,
                         migrationInfo.FullName));
 
-                    migrationInfo.ApplyMigration(_clientContext, _logger);
+                    migrationInfo.ApplyMigration(_clientContext, _configuration.Log);
                     var rootWeb = _clientContext.Site.RootWeb;
 
                     _clientContext.Load(rootWeb);
@@ -80,14 +80,14 @@ namespace IonFar.SharePoint.Migration
                     
                     rootWeb.Update();
                     _clientContext.ExecuteQuery();
-                    _logger.Information("The migration is complete.");
+                    _configuration.Log.Information("The migration is complete.");
 
                 }
             }
             catch (Exception ex)
             {
-                _logger.Error(ex,
-                    "The migration failed and the environment has been left in a partially complete state, manual intervention may be required."
+                _configuration.Log.Error(
+                    "The migration failed and the environment has been left in a partially complete state, manual intervention may be required.\nException: {0}", ex
                 );
                 throw;
             }

@@ -7,9 +7,9 @@ namespace IonFar.SharePoint.Migration
     /// </summary>
     public abstract class Migration : IMigration
     {
-        public abstract void Up(ClientContext clientContext, ILogger logger);
+        public abstract void Up(ClientContext clientContext, IUpgradeLog logger);
 
-        public virtual void Down(ClientContext clientContext, ILogger logger) { }
+        public virtual void Down(ClientContext clientContext, IUpgradeLog logger) { }
 
         protected string BaseFolder
         {
