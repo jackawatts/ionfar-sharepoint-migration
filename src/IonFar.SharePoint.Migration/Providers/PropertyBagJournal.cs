@@ -27,6 +27,11 @@ namespace IonFar.SharePoint.Migration.Providers
         //    _prefix = prefix;
         //}
 
+
+        /// <summary>
+        /// Gets the migrations that have already been executed.
+        /// </summary>
+        /// <param name="clientContext">Context to the SharePoint server</param>
         public IEnumerable<MigrationInfo> GetExecutedMigrations(ClientContext clientContext)
         {
             //var availableMigrationsIds = availableMigrations.Select(am => am.Id).ToList();
@@ -60,6 +65,11 @@ namespace IonFar.SharePoint.Migration.Providers
             }
         }
 
+        /// <summary>
+        /// Records a migration as having been run.
+        /// </summary>
+        /// <param name="clientContext">Context to the SharePoint server</param>
+        /// <param name="migration">Migration that has been run</param>
         public void StoreExecutedMigration(ClientContext clientContext, MigrationInfo migrationInfo)
         {
             var rootWeb = clientContext.Site.RootWeb;

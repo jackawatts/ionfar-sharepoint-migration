@@ -35,6 +35,7 @@ namespace TestApplication
 
                 var config = new MigratorConfiguration() { Log = _logger };
                 config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+                //config.Journal = new NullJournal();
 
                 var migrator = new Migrator(clientContext, config);
 
