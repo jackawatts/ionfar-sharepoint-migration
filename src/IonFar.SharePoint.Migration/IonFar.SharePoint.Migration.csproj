@@ -108,6 +108,7 @@
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="MigrationInfo.cs" />
     <Compile Include="Migrator.cs" />
+    <Compile Include="Providers\ExistingContextManager.cs" />
     <Compile Include="Providers\NullJournal.cs" />
     <Compile Include="Providers\PropertyBagJournal.cs" />
     <Compile Include="Providers\TraceUpgradeLog.cs" />
