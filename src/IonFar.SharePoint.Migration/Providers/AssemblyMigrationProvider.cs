@@ -37,19 +37,20 @@ namespace IonFar.SharePoint.Migration.Providers
         }
 
         /// <summary>
-        /// Gets all migrations that should be executed.
+        /// Gets all migrations that should be executed, ordered by name.
         /// </summary>
-        public IEnumerable<MigrationInfo> GetMigrations()
+        public IEnumerable<IMigration> GetMigrations(IContextManager contextManager, IUpgradeLog log)
         {
             var availableMigrations = _assemblyContainingMigrations
                 .GetExportedTypes()
                 .Where(candidateType => typeof(IMigration).IsAssignableFrom(candidateType) &&
                     !candidateType.IsAbstract &&
                     candidateType.IsClass &&
-                    _filter(candidateType.FullName)
-                    )
-                .Select(candidateType => new MigrationInfo(candidateType))
-                .Where(migrationinfo => migrationinfo.Version > 0);
+                    candidateType.GetConstructor(Type.EmptyTypes) != null)
+                .Where(migrationType => _filter(migrationType.FullName))
+                .Select(migrationType => (IMigration)Activator.CreateInstance(migrationType))
+                .OrderBy(migration => migration.Name)
+                .ToList();
 
             return availableMigrations;
         }

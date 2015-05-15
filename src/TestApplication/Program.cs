@@ -25,22 +25,26 @@ namespace TestApplication
             ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
             var config = new MigratorConfiguration();
+            // Use ConsoleUpgradeLog for coloured console output, 
+            // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
             //config.Log = new ConsoleUpgradeLog();
-            //config.Log = new TraceUpgradeLog();
 
             config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+
+            // Use NullJournal to run the migrations every time
             //config.Journal = new NullJournal();
 
             config.ContextManager = new BasicContextManager(webUrl, credentials);
             var migrator = new Migrator(config);
-            migrator.Migrate();
+            migrator.PerformMigration();
 
+            //Alternative using ExistingContextManager
             //using (var clientContext = new ClientContext(webUrl))
             //{
             //    clientContext.Credentials = credentials;
             //    config.ContextManager = new ExistingContextManager(clientContext);
             //    var migrator = new Migrator(config);
-            //    migrator.Migrate();
+            //    migrator.PerformMigration();
             //}
 
             Console.WriteLine("Done");

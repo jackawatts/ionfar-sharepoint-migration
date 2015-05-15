@@ -23,6 +23,6 @@ namespace IonFar.SharePoint.Migration
         /// </summary>
         /// <param name="clientContext">Context to the SharePoint server</param>
         /// <param name="migration">Migration that has been run</param>
-        void StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, MigrationInfo migrationInfo);
+        void StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, IMigration migration);
     }
 }

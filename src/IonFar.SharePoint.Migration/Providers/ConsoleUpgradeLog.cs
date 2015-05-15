@@ -35,7 +35,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <param name="args">The args.</param>
         public void Error(string format, params object[] args)
         {
-            Write(ConsoleColor.Yellow, format, args);
+            WriteLine(ConsoleColor.Red, "ERROR: " + format, args);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <param name="args">The args.</param>
         public void Information(string format, params object[] args)
         {
-            Write(ConsoleColor.White, format, args);
+            WriteLine(ConsoleColor.White, format, args);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <param name="args">The args.</param>
         public void Warning(string format, params object[] args)
         {
-            Write(ConsoleColor.Red, format, args);
+            WriteLine(ConsoleColor.Yellow, "WARN: " + format, args);
         }
 
         /// <summary>
@@ -65,10 +65,13 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <param name="args">The args.</param>
         public void Verbose(string format, params object[] args)
         {
-            Write(ConsoleColor.DarkCyan, format, args);
+            if (IncludeVerbose)
+            {
+                WriteLine(ConsoleColor.DarkCyan, format, args);
+            }
         }
 
-        private static void Write(ConsoleColor color, string format, object[] args)
+        private static void WriteLine(ConsoleColor color, string format, object[] args)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(format, args);

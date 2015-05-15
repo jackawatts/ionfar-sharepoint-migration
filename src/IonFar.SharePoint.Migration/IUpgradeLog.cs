@@ -2,6 +2,16 @@
 
 namespace IonFar.SharePoint.Migration
 {
+    /// <summary>
+    /// Interface for logging
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If passed in as a method parameter it can be used directly, however
+    /// if passed to the constructor of a provider, it should be passed as
+    /// Func&lt;IUpgradeLog&gt; to allow lazy instantiation.
+    /// </para>
+    /// </remarks>
     public interface IUpgradeLog
     {
         /// <summary>

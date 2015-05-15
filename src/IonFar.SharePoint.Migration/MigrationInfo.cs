@@ -11,69 +11,42 @@ namespace IonFar.SharePoint.Migration
     public class MigrationInfo
     {
         /// <summary>
-        /// The type containing the Migration to be applied.
+        /// Gets the UTC DateTime the migration was applied
         /// </summary>
-        public string MigrationType { get; protected set; }
-        
-        /// <summary>
-        /// Get the Version of <see cref="MigrationAttribute"/> associated with the MigrationType.
-        /// </summary>
-        public long Version { get; protected set; }
-        
-        /// <summary>
-        /// Is this migration version needs to be always overriden
-        /// </summary>
-        public bool OverrideCurrentDeployment { get; protected set; }
-        
-        /// <summary>
-        /// Gets the FullName of the MigrationType.
-        /// </summary>
-        public string FullName { get; protected set; }
-        
-        /// <summary>
-        /// Gets the UTC DateTime the migration was applied.
-        /// </summary>
-        public DateTime AppliedAtUtc { get; protected set; }
-
-        protected MigrationInfo()
-        {
-        }
+        public DateTimeOffset AppliedAt { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MigrationInfo"/> class with a type containing a migration.
+        /// Gets the ID of the migration, as stored in the journal
         /// </summary>
-        /// <param name="migrationType">The type containing the migration.</param>
-        public MigrationInfo(Type migrationType)
-        {
-            MigrationType = migrationType.AssemblyQualifiedName;
-            FullName = migrationType.FullName;
-            var migrationAttribute = migrationType.GetCustomAttribute<MigrationAttribute>(inherit: true);
-            if (migrationAttribute != null)
-            {
-                Version = migrationAttribute.Version;
-                OverrideCurrentDeployment = migrationAttribute.OverrideCurrentDeployment;
-            }
+        public long Id { get; private set; }
 
-        }
+        /// <summary>
+        /// Gets the name of the migration, used to detect already run migrations (case insensitive comparison)
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the additional note, stored with the migration
+        /// </summary>
+        public string Note { get; private set; }
 
         [JsonConstructor]
-        private MigrationInfo(string migrationType, long version, bool overrideCurrentDeployment, string fullName, DateTime appliedAtUtc)
+        public MigrationInfo(long id, string name, string note, DateTimeOffset appliedAt)
         {
-            MigrationType = migrationType;
-            Version = version;
-            OverrideCurrentDeployment = overrideCurrentDeployment;
-            FullName = fullName;
-            AppliedAtUtc = appliedAtUtc;
+            Id = id;
+            Note = note;
+            Name = name;
+            AppliedAt = appliedAt;
         }
 
-        public void ApplyMigration(IContextManager contextManager, IUpgradeLog logger)
-        {
-            var migrationtype = Type.GetType(MigrationType);
-            var migration = (IMigration)Activator.CreateInstance(migrationtype);
+        //public void ApplyMigration(IContextManager contextManager, IUpgradeLog logger)
+        //{
+        //    var migrationtype = Type.GetType(Note);
+        //    var migration = (IMigration)Activator.CreateInstance(migrationtype);
 
-            migration.Up(contextManager.CurrentContext, logger);
+        //    migration.Apply(contextManager.CurrentContext, logger);
 
-            AppliedAtUtc = DateTime.UtcNow;
-        }
+        //    AppliedAtUtc = DateTime.UtcNow;
+        //}
     }
 }

@@ -20,7 +20,7 @@ namespace IonFar.SharePoint.Migration
         /// <summary>
         /// Executes the migration.
         /// </summary>
-        public void Migrate()
+        public void PerformMigration()
         {
             _configuration.Validate();
             try
@@ -29,22 +29,22 @@ namespace IonFar.SharePoint.Migration
                 {
                     var clientContext = _configuration.ContextManager.CurrentContext;
 
-                    _configuration.Log.Information("Starting upgrade against SharePoint instance at " + clientContext.Url);
                     var assembly = Assembly.GetExecutingAssembly();
                     var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                     _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
+                    _configuration.Log.Information("Starting upgrade against SharePoint instance at " + clientContext.Url);
 
-                    var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations());
+                    var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations(_configuration.ContextManager, _configuration.Log));
 
                     var appliedMigrations = _configuration.Journal.GetExecutedMigrations(_configuration.ContextManager, _configuration.Log);
 
-                    var migrationsToRun = GetMigrationsToRun(appliedMigrations, availableMigrations);
+                    var migrationsToRun = availableMigrations.Where(available => !appliedMigrations.Any(applied => applied.Name.Equals(available.Name, StringComparison.InvariantCultureIgnoreCase)));
 
-                    if (!availableMigrations.Any())
-                    {
-                        _configuration.Log.Information("There are no migrations from any of the providers.");
-                        return;
-                    }
+                    //if (!availableMigrations.Any())
+                    //{
+                    //    _configuration.Log.Information("There are no migrations from any of the providers.");
+                    //    return;
+                    //}
 
                     if (!migrationsToRun.Any())
                     {
@@ -52,15 +52,13 @@ namespace IonFar.SharePoint.Migration
                         return;
                     }
 
-                    foreach (var migrationInfo in migrationsToRun)
+                    foreach (var migration in migrationsToRun)
                     {
-                        _configuration.Log.Information(string.Format("Upgrading to {0} by running {1}...",
-                            migrationInfo.Version,
-                            migrationInfo.FullName));
+                        _configuration.Log.Information(string.Format("Upgrading by running '{0}'", migration.Name));
 
-                        migrationInfo.ApplyMigration(_configuration.ContextManager, _configuration.Log);
+                        migration.Apply(_configuration.ContextManager, _configuration.Log);
 
-                        _configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migrationInfo);
+                        _configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migration);
 
                         _configuration.Log.Information("The migration is complete.");
 
@@ -74,17 +72,6 @@ namespace IonFar.SharePoint.Migration
                 );
                 throw;
             }
-        }
-
-        private MigrationInfo[] GetMigrationsToRun(IEnumerable<MigrationInfo> appliedMigrations, IEnumerable<MigrationInfo> availableMigrations)
-        {
-            var appliedVersions = new HashSet<long>(appliedMigrations.Select(m => m.Version));
-
-            return availableMigrations
-                .Where(availableMigration => !appliedVersions.Contains(availableMigration.Version) 
-                    || availableMigration.OverrideCurrentDeployment)
-                .OrderBy(migrationToRun => migrationToRun.Version)
-                .ToArray();
         }
 
     }

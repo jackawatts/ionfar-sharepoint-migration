@@ -12,8 +12,8 @@ namespace IonFar.SharePoint.Migration
     public interface IMigrationProvider
     {
         /// <summary>
-        /// Gets all migrations that should be executed.
+        /// Gets all migrations that should be executed, in the order they should be executed.
         /// </summary>
-        IEnumerable<MigrationInfo> GetMigrations();
+        IEnumerable<IMigration> GetMigrations(IContextManager contextManager, IUpgradeLog log);
     }
 }

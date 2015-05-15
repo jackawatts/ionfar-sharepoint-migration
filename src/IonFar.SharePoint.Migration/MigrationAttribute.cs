@@ -3,19 +3,19 @@
 namespace IonFar.SharePoint.Migration
 {
     /// <summary>
-    /// Used to provide a unique version number to an IMigration.
+    /// Used to provide a unique name to a Migration.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class MigrationAttribute : Attribute
     {
-        public MigrationAttribute(long version,bool overrideCurrentDeployment = false)
+        /// <summary>
+        /// Gets the name of the migration, used to detect already run migrations
+        /// </summary>
+        public MigrationAttribute(string name)
         {
-            if (version < 0) throw new ArgumentOutOfRangeException("version", "Migration version must be greater than zero.");
-            Version = version;
-            OverrideCurrentDeployment = overrideCurrentDeployment;
+            Name = name;
         }
 
-        public bool OverrideCurrentDeployment { get; private set; }
-        public long Version { get; private set; }
+        public string Name { get; private set; }
     }
 }
