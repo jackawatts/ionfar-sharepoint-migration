@@ -20,9 +20,10 @@ namespace IonFar.SharePoint.Migration
         /// <summary>
         /// Executes the migration.
         /// </summary>
-        public void PerformMigration()
+        public MigrationResult PerformMigration()
         {
             _configuration.Validate();
+            var appliedMigrations = new List<MigrationInfo>();
             try
             {
                 using (_configuration.ContextManager.ContextScope(_configuration.Log))
@@ -36,41 +37,39 @@ namespace IonFar.SharePoint.Migration
 
                     var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations(_configuration.ContextManager, _configuration.Log));
 
-                    var appliedMigrations = _configuration.Journal.GetExecutedMigrations(_configuration.ContextManager, _configuration.Log);
+                    var previousMigrations = _configuration.Journal.GetExecutedMigrations(_configuration.ContextManager, _configuration.Log);
 
-                    var migrationsToRun = availableMigrations.Where(available => !appliedMigrations.Any(applied => applied.Name.Equals(available.Name, StringComparison.InvariantCultureIgnoreCase)));
+                    var migrationsToRun = availableMigrations.Where(available => !previousMigrations.Any(previous => previous.Name.Equals(available.Name, StringComparison.InvariantCultureIgnoreCase))).ToList();
 
-                    //if (!availableMigrations.Any())
-                    //{
-                    //    _configuration.Log.Information("There are no migrations from any of the providers.");
-                    //    return;
-                    //}
-
-                    if (!migrationsToRun.Any())
+                    if (migrationsToRun.Count == 0)
                     {
                         _configuration.Log.Information("The SharePoint instance is up to date, there are no migrations to run.");
-                        return;
+                        return new MigrationResult(appliedMigrations, successful: true, error: null);
                     }
 
                     foreach (var migration in migrationsToRun)
                     {
-                        _configuration.Log.Information(string.Format("Upgrading by running '{0}'", migration.Name));
+                        _configuration.Log.Information(string.Format("Upgrading by running migration '{0}'", migration.Name));
 
                         migration.Apply(_configuration.ContextManager, _configuration.Log);
 
-                        _configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migration);
+                        var migrationInfo =_configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migration);
 
-                        _configuration.Log.Information("The migration is complete.");
+                        _configuration.Log.Verbose("Migration {0} complete (journal ID: {1})", migrationInfo.Name, migrationInfo.Id);
 
+                        appliedMigrations.Add(migrationInfo);
                     }
+
+                    _configuration.Log.Information("Migration run successful");
+                    return new MigrationResult(appliedMigrations, successful: true, error: null);
                 }
             }
             catch (Exception ex)
             {
                 _configuration.Log.Error(
-                    "The migration failed and the environment has been left in a partially complete state, manual intervention may be required.\nException: {0}", ex
+                    "Migration failed and the environment has been left in a partially complete state, manual intervention may be required.\nException: {0}", ex
                 );
-                throw;
+                return new MigrationResult(appliedMigrations, successful: false, error: ex);
             }
         }
 

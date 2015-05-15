@@ -99,6 +99,7 @@
     <Compile Include="IMigrationProvider.cs" />
     <Compile Include="IUpgradeLog.cs" />
     <Compile Include="IMigration.cs" />
+    <Compile Include="MigrationResult.cs" />
     <Compile Include="Providers\AssemblyMigrationProvider.cs" />
     <Compile Include="MigratorConfiguration.cs" />
     <Compile Include="Providers\BasicContextManager.cs" />

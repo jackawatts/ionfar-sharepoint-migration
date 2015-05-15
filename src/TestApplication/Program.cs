@@ -36,19 +36,24 @@ namespace TestApplication
 
             config.ContextManager = new BasicContextManager(webUrl, credentials);
             var migrator = new Migrator(config);
-            migrator.PerformMigration();
+            var result = migrator.PerformMigration();
+            Console.WriteLine(result.Successful ? "Done" : "Failed");
 
-            //Alternative using ExistingContextManager
+            // Alternative using ExistingContextManager
+            //MigrationResult result;
             //using (var clientContext = new ClientContext(webUrl))
             //{
             //    clientContext.Credentials = credentials;
             //    config.ContextManager = new ExistingContextManager(clientContext);
             //    var migrator = new Migrator(config);
-            //    migrator.PerformMigration();
+            //    result = migrator.PerformMigration();
             //}
 
-            Console.WriteLine("Done");
             Console.ReadLine();
+            if (!result.Successful)
+            {
+                Environment.Exit(9);
+            }
         }
 
         private static SecureString GetSecureStringFromString(string nonsecureString)
