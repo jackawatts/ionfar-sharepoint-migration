@@ -31,7 +31,9 @@ namespace TestApplication
 
             TestBasicMigration(webUrl, credentials);
             TestFolderUpload(webUrl, credentials);
+            TestScriptMigration(webUrl, credentials);
 
+            Console.WriteLine();
             Console.WriteLine("Finished");
 //            Console.ReadLine();
         }
@@ -49,6 +51,9 @@ namespace TestApplication
 
         private static void TestBasicMigration(string webUrl, ICredentials credentials)
         {
+            Console.WriteLine();
+            Console.WriteLine("# TestBasicMigration #");
+
             var config = new MigratorConfiguration();
             // Use ConsoleUpgradeLog for coloured console output, 
             // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
@@ -78,8 +83,12 @@ namespace TestApplication
 
         private static void TestFolderUpload(string webUrl, ICredentials credentials)
         {
+            Console.WriteLine();
+            Console.WriteLine("# TestFolderUpload #");
+            
             var config = new SynchronizerConfiguration();
             config.ContextManager = new BasicContextManager(webUrl, credentials);
+
 
             // Store hashes in property bag
             var hashProvider = new WebPropertyHashProvider();
@@ -111,6 +120,30 @@ namespace TestApplication
             // Additional utility function to create a ScriptLink, showing how the results can be used
             var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
             sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 9999);
+        }
+        
+        private static void TestScriptMigration(string webUrl, ICredentials credentials)
+        {
+            Console.WriteLine();
+            Console.WriteLine("# TestScriptMigration #");
+
+            var config = new MigratorConfiguration();
+            // Use ConsoleUpgradeLog for coloured console output, 
+            // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
+            //config.Log = new ConsoleUpgradeLog();
+
+            var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var scriptsSource = System.IO.Path.Combine(baseFolder, "Migrations");
+            config.MigrationProviders.Add(new ScriptMigrationProvider(scriptsSource));
+
+            // Use NullJournal to run the migrations every time
+            config.Journal = new NullJournal();
+
+            config.ContextManager = new BasicContextManager(webUrl, credentials);
+            var migrator = new Migrator(config);
+            var result = migrator.PerformMigration();
+
+            Console.WriteLine(result.Successful ? "Done" : "Failed");
         }
 
     }

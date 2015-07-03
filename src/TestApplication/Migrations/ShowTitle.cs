@@ -4,7 +4,7 @@ using Microsoft.SharePoint.Client;
 
 namespace TestApplication.Migrations
 {
-    [Migration("Test0001")]
+    [Migration("Migration0001")]
     public class ShowTitle : Migration
     {
         public override void Apply(IContextManager contextManager, IUpgradeLog logger)
