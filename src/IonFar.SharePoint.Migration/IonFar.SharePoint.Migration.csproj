@@ -110,7 +110,7 @@
     <Compile Include="Migrator.cs" />
     <Compile Include="Providers\ExistingContextManager.cs" />
     <Compile Include="Providers\NullJournal.cs" />
-    <Compile Include="Providers\PropertyBagJournal.cs" />
+    <Compile Include="Providers\WebPropertyBagJournal.cs" />
     <Compile Include="Providers\TraceUpgradeLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FileUploadService.cs" />

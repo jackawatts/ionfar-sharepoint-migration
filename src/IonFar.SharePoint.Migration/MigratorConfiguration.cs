@@ -20,7 +20,7 @@ namespace IonFar.SharePoint.Migration
         public MigratorConfiguration()
         {
             Log = new TraceUpgradeLog();
-            Journal = new PropertyBagJournal();
+            Journal = new WebPropertyBagJournal();
         }
 
         /// <summary>

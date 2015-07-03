@@ -11,9 +11,9 @@ namespace IonFar.SharePoint.Migration.Providers
     /// <summary>
     /// A journal that tracks executed migrations as property bag values with a specific prefix.
     /// </summary>
-    public class PropertyBagJournal : IJournal
+    public class WebPropertyBagJournal : IJournal
     {
-        public const string DefaultPrefix = "migrationinfos/";
+        public const string DefaultPrefix = "ION_Migration/";
 
         string _prefix;
         long _lastId = -1;
@@ -22,7 +22,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <summary>
         /// Creates a property bag journal with the default prefix.
         /// </summary>
-        public PropertyBagJournal()
+        public WebPropertyBagJournal()
             : this(DefaultPrefix)
         {
         }
@@ -31,7 +31,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// Creates a property bag journal with the specified prefix.
         /// </summary>
         /// <param name="prefix">Property key prefix</param>
-        public PropertyBagJournal(string prefix)
+        public WebPropertyBagJournal(string prefix)
         {
             _prefix = prefix;
         }

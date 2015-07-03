@@ -15,12 +15,12 @@ namespace TestApplication
         {
             if (args.Length != 3)
             {
-                Console.WriteLine("Format is: TestApplication.exe username password sitecollectionurl");
+                Console.WriteLine("Format is: TestApplication.exe sitecollectionurl username password");
                 return;
             }
-            string username = args[0];
-            string password = args[1];
-            string webUrl = args[2];
+            string webUrl = args[0];
+            string username = args[1];
+            string password = args[2];
             SecureString securePassword = GetSecureStringFromString(password);
             ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
