@@ -116,7 +116,11 @@
     <Compile Include="Services\FileUploadService.cs" />
     <Compile Include="Services\IFileUploadService.cs" />
     <Compile Include="Services\IHashProvider.cs" />
+    <Compile Include="Services\ITextFilePreprocessor.cs" />
     <Compile Include="Services\NullHashProvider.cs" />
+    <Compile Include="Services\StreamPreprocessor.cs" />
+    <Compile Include="Services\UrlTokenPreprocessor.cs" />
+    <Compile Include="Services\VariableSubstitutionPreprocessor.cs" />
     <Compile Include="Services\WebPropertyHashProvider.cs" />
     <Compile Include="SPUrlUtility.cs" />
   </ItemGroup>

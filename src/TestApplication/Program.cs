@@ -6,6 +6,9 @@ using TestApplication.Migrations;
 using System;
 using IonFar.SharePoint.Migration.Providers;
 using System.Net;
+using IonFar.SharePoint.Migration.Services;
+using System.Collections.Generic;
+using System.Web;
 
 namespace TestApplication
 {
@@ -24,6 +27,26 @@ namespace TestApplication
             SecureString securePassword = GetSecureStringFromString(password);
             ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
+            TestBasicMigration(webUrl, credentials);
+            TestFolderUpload(webUrl, credentials);
+
+            Console.WriteLine("Finished");
+            Console.ReadLine();
+        }
+
+        private static SecureString GetSecureStringFromString(string nonsecureString)
+        {
+            var result = new SecureString();
+            foreach (char c in nonsecureString)
+            {
+                result.AppendChar(c);
+            }
+
+            return result;
+        }
+
+        private static void TestBasicMigration(string webUrl, ICredentials credentials)
+        {
             var config = new MigratorConfiguration();
             // Use ConsoleUpgradeLog for coloured console output, 
             // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
@@ -37,7 +60,6 @@ namespace TestApplication
             config.ContextManager = new BasicContextManager(webUrl, credentials);
             var migrator = new Migrator(config);
             var result = migrator.PerformMigration();
-            Console.WriteLine(result.Successful ? "Done" : "Failed");
 
             // Alternative using ExistingContextManager
             //MigrationResult result;
@@ -49,22 +71,32 @@ namespace TestApplication
             //    result = migrator.PerformMigration();
             //}
 
-            Console.ReadLine();
-            if (!result.Successful)
-            {
-                Environment.Exit(9);
-            }
+            Console.WriteLine(result.Successful ? "Done" : "Failed");
         }
 
-        private static SecureString GetSecureStringFromString(string nonsecureString)
+        private static void TestFolderUpload(string webUrl, ICredentials credentials)
         {
-            var result = new SecureString();
-            foreach (char c in nonsecureString)
+            using (var clientContext = new ClientContext(webUrl))
             {
-                result.AppendChar(c);
-            }
+                clientContext.Credentials = credentials;
 
-            return result;
+                var uploadService = new FileUploadService(clientContext);
+                uploadService.HashProvider = new WebPropertyHashProvider(clientContext.Site, clientContext.Site.RootWeb);
+                uploadService.Preprocessors.Add(new UrlTokenPreprocessor(clientContext));
+                var substitutionVariables = new Dictionary<string, string>();
+                substitutionVariables.Add("Message", "Hello");
+                uploadService.Preprocessors.Add(new VariableSubstitutionPreprocessor(substitutionVariables));
+
+                var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                var scriptsSource = System.IO.Path.Combine(baseFolder, "Scripts");
+                var scriptsDestinationFolder = "~site/_catalogs/masterpage/scripts";
+                uploadService.EnsureFolder(scriptsDestinationFolder);
+                uploadService.UploadFolder(scriptsSource, scriptsDestinationFolder);
+
+                var hash = uploadService.HashProvider.GetFileHash("~sitecollection/_catalogs/masterpage/scripts/ionfar.example.js");
+                uploadService.EnsureSiteScriptLink("ScriptLink.ION_Example", "~sitecollection/_catalogs/masterpage/scripts/ionfar.example.js?v=" + HttpServerUtility.UrlTokenEncode(hash), 10100);
+            }
         }
+
     }
 }

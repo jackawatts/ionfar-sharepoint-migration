@@ -33,8 +33,8 @@ namespace IonFar.SharePoint.Migration.Services
         /// Note that because the Site is not provided, URLs with the prefix "~sitecollection/" must be resolved before passing to the hash provider.
         /// </para>
         /// </remarks>
-        public WebPropertyHashProvider(Web web)
-            : this(null, web, null, null)
+        public WebPropertyHashProvider(Site site, Web web)
+            : this(site, web, null, null)
         {
         }
 
