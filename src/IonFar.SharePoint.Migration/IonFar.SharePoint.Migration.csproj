@@ -113,6 +113,12 @@
     <Compile Include="Providers\PropertyBagJournal.cs" />
     <Compile Include="Providers\TraceUpgradeLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\FileUploadService.cs" />
+    <Compile Include="Services\IFileUploadService.cs" />
+    <Compile Include="Services\IHashProvider.cs" />
+    <Compile Include="Services\NullHashProvider.cs" />
+    <Compile Include="Services\WebPropertyHashProvider.cs" />
+    <Compile Include="SPUrlUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="IonFar.SharePoint.Migration.nuspec" />
