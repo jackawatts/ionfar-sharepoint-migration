@@ -83,7 +83,7 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void WriteLine(string value)
         {
-            Console.WriteLine("*WriteLine*" + value);
+            Console.WriteLine("*WriteLine* {0}", value);
             //throw new NotImplementedException();
         }
 
@@ -94,12 +94,14 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void WriteVerboseLine(string message)
         {
-            throw new NotImplementedException("WriteVerboseLine not implemented");
+            Console.WriteLine("*Verbose* {0}", message);
+            //throw new NotImplementedException("WriteVerboseLine not implemented");
         }
 
         public override void WriteWarningLine(string message)
         {
-            throw new NotImplementedException("WriteWarningLine not implemented");
+            Console.WriteLine("*Warning* {0}", message);
+            //throw new NotImplementedException("WriteWarningLine not implemented");
         }
     }
 }
