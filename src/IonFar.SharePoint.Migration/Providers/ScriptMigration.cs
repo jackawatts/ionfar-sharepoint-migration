@@ -48,14 +48,20 @@ namespace IonFar.SharePoint.Migration.Providers
             using (var runspace = RunspaceFactory.CreateRunspace(host))
             {
                 runspace.Open();
+                runspace.SessionStateProxy.SetVariable("ErrorActionPreference", "Stop");
+                runspace.SessionStateProxy.SetVariable("SPUrl", contextManager.CurrentContext.Url);
+                runspace.SessionStateProxy.SetVariable("SPCredentials", contextManager.CurrentContext.Credentials);
+
+                // TODO: Allow custom parameters to be passed through (from ScriptMigrationProvider)
+
                 using (var shell = PowerShell.Create())
                 {
                     shell.Runspace = runspace;
 
                     shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
-                    shell.AddScript("$ErrorActionPreference = 'Stop';");
+                    //shell.AddScript("$ErrorActionPreference = 'Stop';");
                     //shell.AddScript("$PSScriptRoot = 'C:\\Temp\\';");
-                    shell.AddScript("$Test1 = 'Test';");
+                    //shell.AddScript("$Test1 = 'Test';");
 
                     //shell.AddScript("$MyInvocation.MyCommand = Add-Member -InputObject $MyInvocation.MyCommand -NotePropertyName Path -NotePropertyValue 'C:\\Temp\\test.txt' -PassThru;");
                     //shell.AddScript(script);
@@ -91,11 +97,12 @@ namespace IonFar.SharePoint.Migration.Providers
                     Console.WriteLine("Execution has stopped. Errors: {0}. Pipeline state: {1}, Reason: {2}", shell.HadErrors, shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason);
                     Console.WriteLine("Host. ShouldExit: {0}. ExitCode: {1}", host.ShouldExit, host.ExitCode);
 
-                    foreach (PSObject outputItem in outputCollection)
-                    {
-                        //TODO: handle/process the output items if required
-                        Console.WriteLine(outputItem.BaseObject.ToString());
-                    }
+                    //Console.WriteLine("Output (after script run):");
+                    //foreach (PSObject outputItem in outputCollection)
+                    //{
+                    //    //TODO: handle/process the output items if required
+                    //    Console.WriteLine(outputItem.BaseObject.ToString());
+                    //}
 
                     if (shell.HadErrors)
                     {

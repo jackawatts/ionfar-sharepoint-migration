@@ -11,7 +11,7 @@ param(
 	$Beta,
 	$Url
 )
-$script:ErrorActionPreference = 'Stop'
+#$script:ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 #$PSScriptRoot = $MyInvocation.MyCommand.Path | Split-Path
 $commonParameters = @{
@@ -20,6 +20,7 @@ $commonParameters = @{
 }
 
 Write-Host "Running Script0001-Test A:$Alpha B:$Beta"
+Write-Output "output"
 Write-Verbose "verbose URL: $Url" -Verbose
 Write-Warning "warning"
 
@@ -27,12 +28,9 @@ Write-Warning "warning"
 #Write-Error "error"
 
 Write-Progress "activity" "status"
-Write-Output "output"
 
-Write-Output "MyInv: $($MyInvocation.GetType())"
-Write-Output "MyCom: $($MyInvocation.MyCommand.GetType())"
-Write-Output "PSScriptRoot: $PSScriptRoot"
-Write-Output "Test1: $Test1"
+Write-Host "Host - PSScriptRoot: $PSScriptRoot"
+Write-Output "Output - SPUrl: $SPUrl"
 
 # Non-zero exit code will stop the script
 #Exit 5
