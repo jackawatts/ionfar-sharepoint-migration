@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Services
 {
     /// <summary>
     /// A context manager that uses an existing ClientContext.

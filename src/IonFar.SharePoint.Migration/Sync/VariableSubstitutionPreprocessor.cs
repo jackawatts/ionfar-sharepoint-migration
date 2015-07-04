@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Migration.Sync
 {
     /// <summary>
     /// Substitutes variables for values in text files
@@ -28,7 +28,7 @@ namespace IonFar.SharePoint.Migration.Services
         /// <summary>
         /// Substitutes variables 
         /// </summary>
-        public string Process(string contents)
+        public string Process(IContextManager contextManager, IUpgradeLog logger, string contents)
         {
             return tokenRegex.Replace(contents, match => ReplaceToken(match, variables));
         }

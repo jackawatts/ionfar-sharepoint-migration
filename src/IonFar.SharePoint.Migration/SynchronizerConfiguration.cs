@@ -1,5 +1,5 @@
-﻿using IonFar.SharePoint.Migration.Providers;
-using IonFar.SharePoint.Migration.Services;
+﻿using IonFar.SharePoint.Migration.Services;
+using IonFar.SharePoint.Migration.Sync;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace IonFar.SharePoint.Migration
 {
     /// <summary>
-    /// Represents the configuration of a Migrator
+    /// Represents the configuration of a Synchronizer
     /// </summary>
-    public class MigratorConfiguration
+    public class SynchronizerConfiguration
     {
-        private readonly List<IMigrationProvider> _migrationProviders = new List<IMigrationProvider>();
+        private readonly List<ITextFilePreprocessor> _preprocessors = new List<ITextFilePreprocessor>();
 
         /// <summary>
         /// Creates a new configuration, with default logging to a default TraceUpgrdeLog.
         /// </summary>
-        public MigratorConfiguration()
+        public SynchronizerConfiguration()
         {
             Log = new TraceUpgradeLog();
-            Journal = new WebPropertyBagJournal();
+            HashProvider = new WebPropertyHashProvider();
         }
 
         /// <summary>
@@ -30,9 +30,9 @@ namespace IonFar.SharePoint.Migration
         public IContextManager ContextManager { get; set; }
 
         /// <summary>
-        /// Gets or sets the journal, which tracks the migrations that have already been run.
+        /// Gets or sets the hash provider, which tracks which file version have previously been uploaded.
         /// </summary>
-        public IJournal Journal { get; set; }
+        public IHashProvider HashProvider { get; set; }
 
         /// <summary>
         /// Gets or sets which log captures details about the upgrade.
@@ -40,9 +40,12 @@ namespace IonFar.SharePoint.Migration
         public IUpgradeLog Log { get; set; }
 
         /// <summary>
-        /// Gets a mutable list of migration providers.
+        /// Get a collection of components that will pre-process text files before they are uploaded.
         /// </summary>
-        public IList<IMigrationProvider> MigrationProviders { get { return _migrationProviders; } }
+        public IList<ITextFilePreprocessor> Preprocessors
+        {
+            get { return _preprocessors; }
+        }
 
         /// <summary>
         /// Ensures all expectations have been met regarding this configuration.
@@ -50,8 +53,7 @@ namespace IonFar.SharePoint.Migration
         public void Validate()
         {
             if (Log == null) throw new ArgumentException("A log is required to run migrations. Please leave at the default Trace logger, or replace with another logger.");
-            if (Journal == null) throw new ArgumentException("A journal is required. Please leave the default Journal, or replace with another.");
-            if (MigrationProviders.Count == 0) throw new ArgumentException("No migration providers were added. Please add an assembly (or other) migration provider.");
+            if (HashProvider == null) throw new ArgumentException("A hash provider is required. Please leave the default HashProvider, or replace with another.");
             if (ContextManager == null) throw new ArgumentException("A context manager is required. Please leave the default Context Manager, or replace with another.");
         }
     }

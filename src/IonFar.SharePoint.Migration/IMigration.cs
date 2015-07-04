@@ -17,7 +17,7 @@ namespace IonFar.SharePoint.Migration
         /// <summary>
         /// Executes the migration
         /// </summary>
-        /// <param name="contextManager">Provides the crrent SharePoint context</param>
+        /// <param name="contextManager">Provides the current SharePoint context</param>
         /// <param name="logger">To log messages to the migrator</param>
         void Apply(IContextManager contextManager, IUpgradeLog logger);
     }

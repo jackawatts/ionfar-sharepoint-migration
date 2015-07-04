@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Migration
 {
     /// <summary>
     /// Preprocessor that modifies text files before they are uploaded.
@@ -15,6 +15,9 @@ namespace IonFar.SharePoint.Migration.Services
         /// <summary>
         /// Performs some preprocessing step on a script
         /// </summary>
-        string Process(string contents);
+        /// <param name="contextManager">Provides the current SharePoint context</param>
+        /// <param name="logger">To log messages to the migrator</param>
+        /// <param name="contents">String contents to process</param>
+        string Process(IContextManager contextManager, IUpgradeLog logger, string contents);
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Migration.Sync
 {
     internal class StreamPreprocessor : IDisposable
     {
@@ -14,7 +14,7 @@ namespace IonFar.SharePoint.Migration.Services
         IEnumerable<ITextFilePreprocessor> _preprocessors;
         System.IO.Stream _outputStream;
 
-        public StreamPreprocessor(System.IO.Stream inputStream, IEnumerable<ITextFilePreprocessor> preprocessors)
+        public StreamPreprocessor(IContextManager contextManager, IUpgradeLog logger, System.IO.Stream inputStream, IEnumerable<ITextFilePreprocessor> preprocessors)
         {
             _inputStream = inputStream;
             _preprocessors = preprocessors;
@@ -26,7 +26,7 @@ namespace IonFar.SharePoint.Migration.Services
                     var content = reader.ReadToEnd();
                     foreach (var preprocessor in preprocessors)
                     {
-                        content = preprocessor.Process(content);
+                        content = preprocessor.Process(contextManager, logger, content);
                     }
                     _outputStream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(content));
                 }

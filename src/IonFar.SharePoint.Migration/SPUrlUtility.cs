@@ -130,6 +130,17 @@ namespace IonFar.SharePoint.Migration
         /// <summary>
         /// Resolves site collection and site relative URLs.
         /// </summary>
+        /// <param name="context">ClientContext to use to resolve '~sitecollection/' and '~site/' prefixes</param>
+        /// <param name="prefixedPath">Path, optionally starting with '~sitecollection/' or '~site/' prefix.</param>
+        /// <returns>Server relative path, with the prefix replaced with the corresponding server relative path of the site or web; if there is no prefix the original path is returned</returns>
+        public static string ResolveServerRelativeUrl(ClientContext context, string prefixedPath)
+        {
+            return ResolveServerRelativeUrl(context.Site, context.Web, prefixedPath);
+        }
+
+        /// <summary>
+        /// Resolves site collection and site relative URLs.
+        /// </summary>
         /// <param name="site">Site to use if '~sitecollection/' prefix needs to be resolved</param>
         /// <param name="web">Web to use if '~site/' prefix needs to be resolved</param>
         /// <param name="prefixedPath">Path, starting with '~sitecollection/' or '~site/' prefix.</param>

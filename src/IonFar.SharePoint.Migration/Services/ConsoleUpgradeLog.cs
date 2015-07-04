@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Services
 {
     /// <summary>
     /// A log that writes to the console in a colorful way.

@@ -23,17 +23,17 @@ namespace IonFar.SharePoint.Migration.Providers
         /// Creates a property bag journal with the default prefix.
         /// </summary>
         public WebPropertyBagJournal()
-            : this(DefaultPrefix)
+            : this(null)
         {
         }
 
         /// <summary>
         /// Creates a property bag journal with the specified prefix.
         /// </summary>
-        /// <param name="prefix">Property key prefix</param>
+        /// <param name="prefix">Property key prefix; if null the default prefix (ION_Migration/) is used</param>
         public WebPropertyBagJournal(string prefix)
         {
-            _prefix = prefix;
+            _prefix = prefix ?? DefaultPrefix;
         }
 
         /// <summary>

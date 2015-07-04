@@ -8,10 +8,17 @@ using System.Diagnostics;
 
 namespace IonFar.SharePoint.Migration
 {
+    /// <summary>
+    /// Applies incremental migrations to a SharePoint site.
+    /// </summary>
     public class Migrator
     {
         private readonly MigratorConfiguration _configuration;
 
+        /// <summary>
+        /// Creates a Migrator with the specified configuration
+        /// </summary>
+        /// <param name="configuration">the configuration</param>
         public Migrator(MigratorConfiguration configuration)
         {
             _configuration = configuration;

@@ -9,6 +9,8 @@ using System.Net;
 using IonFar.SharePoint.Migration.Services;
 using System.Collections.Generic;
 using System.Web;
+using IonFar.SharePoint.Migration.Sync;
+using System.Linq;
 
 namespace TestApplication
 {
@@ -31,7 +33,7 @@ namespace TestApplication
             TestFolderUpload(webUrl, credentials);
 
             Console.WriteLine("Finished");
-            Console.ReadLine();
+//            Console.ReadLine();
         }
 
         private static SecureString GetSecureStringFromString(string nonsecureString)
@@ -76,26 +78,39 @@ namespace TestApplication
 
         private static void TestFolderUpload(string webUrl, ICredentials credentials)
         {
-            using (var clientContext = new ClientContext(webUrl))
-            {
-                clientContext.Credentials = credentials;
+            var config = new SynchronizerConfiguration();
+            config.ContextManager = new BasicContextManager(webUrl, credentials);
 
-                var uploadService = new FileUploadService(clientContext);
-                uploadService.HashProvider = new WebPropertyHashProvider(clientContext.Site, clientContext.Site.RootWeb);
-                uploadService.Preprocessors.Add(new UrlTokenPreprocessor(clientContext));
-                var substitutionVariables = new Dictionary<string, string>();
-                substitutionVariables.Add("Message", "Hello");
-                uploadService.Preprocessors.Add(new VariableSubstitutionPreprocessor(substitutionVariables));
+            // Store hashes in property bag
+            var hashProvider = new WebPropertyHashProvider();
+            config.HashProvider = hashProvider;
 
-                var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-                var scriptsSource = System.IO.Path.Combine(baseFolder, "Scripts");
-                var scriptsDestinationFolder = "~site/_catalogs/masterpage/scripts";
-                uploadService.EnsureFolder(scriptsDestinationFolder);
-                uploadService.UploadFolder(scriptsSource, scriptsDestinationFolder);
+            // Use NullHashProvider to always upload files
+            //config.HashProvider = new NullHashProvider();
 
-                var hash = uploadService.HashProvider.GetFileHash("~sitecollection/_catalogs/masterpage/scripts/ionfar.example.js");
-                uploadService.EnsureSiteScriptLink("ScriptLink.ION_Example", "~sitecollection/_catalogs/masterpage/scripts/ionfar.example.js?v=" + HttpServerUtility.UrlTokenEncode(hash), 10100);
-            }
+            // Will substitute '~site/' and '~sitecollection/'
+            config.Preprocessors.Add(new UrlTokenPreprocessor());
+
+            // Will substitute '$key$' with value
+            var substitutionVariables = new Dictionary<string, string>();
+            substitutionVariables.Add("Message", "Hello");
+            config.Preprocessors.Add(new VariableSubstitutionPreprocessor(substitutionVariables));
+
+
+            var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var scriptsSource = System.IO.Path.Combine(baseFolder, "Scripts");
+            var scriptsDestinationFolder = "~site/_catalogs/masterpage/scripts";
+
+            // Ensure folder exists, then synchronise all changed files
+            var sync = new Synchronizer(config);
+            var folder = sync.EnsureFolder(scriptsDestinationFolder);
+            var result = sync.SynchronizeFolder(scriptsSource, scriptsDestinationFolder);
+
+            Console.WriteLine(result.Successful ? "Done" : "Failed");
+
+            // Additional utility function to create a ScriptLink, showing how the results can be used
+            var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
+            sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 9999);
         }
 
     }

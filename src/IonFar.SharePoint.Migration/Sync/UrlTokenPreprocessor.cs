@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Migration.Sync
 {
     public class UrlTokenPreprocessor : ITextFilePreprocessor
     {
@@ -15,30 +15,15 @@ namespace IonFar.SharePoint.Migration.Services
         private Web _web;
 
         /// <summary>
-        /// Creates a UrlTokenPreprocessor for the site and web specified by the context
-        /// </summary>
-        public UrlTokenPreprocessor(ClientContext clientContext)
-            : this(clientContext.Site, clientContext.Web)
-        {
-        }
-
-        /// <summary>
-        /// Creates a UrlTokenPreprocessor for the specified site and web
-        /// </summary>
-        public UrlTokenPreprocessor(Site site, Web web)
-        {
-            _site = site;
-            _web = web;
-        }
-
-        /// <summary>
         /// Replaces ~sitecollection/ and ~site/ references
         /// </summary>
-        public string Process(string contents)
+        public string Process(IContextManager contextManager, IUpgradeLog logger, string contents)
         {
-            var webUrl = SPUrlUtility.ResolveServerRelativeUrl(_site, _web, "~site/");
+            var context = contextManager.CurrentContext;
+
+            var webUrl = SPUrlUtility.ResolveServerRelativeUrl(context, "~site/");
             if (!webUrl.EndsWith("/")) { webUrl += "/"; }
-            var siteUrl = SPUrlUtility.ResolveServerRelativeUrl(_site, _web, "~sitecollection/");
+            var siteUrl = SPUrlUtility.ResolveServerRelativeUrl(context, "~sitecollection/");
             if (!siteUrl.EndsWith("/")) { siteUrl += "/"; }
             var result = tokenRegex.Replace(contents,
                 match => (match.Value == "~site/") ? webUrl : siteUrl);

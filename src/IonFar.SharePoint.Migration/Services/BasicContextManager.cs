@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using System.Net;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Services
 {
     /// <summary>
     /// A simple context manager that creates a new ClientContext when the migration starts and disposes it afterwards.
@@ -47,7 +47,7 @@ namespace IonFar.SharePoint.Migration.Providers
         public IDisposable ContextScope(IUpgradeLog log)
         {
             _log = log;
-            _log.Information("Creating context {0}", _sharePointUrl);
+            _log.Verbose("Creating context {0}", _sharePointUrl);
             _context = new ClientContext(_sharePointUrl);
             _context.Credentials = _credentials;
             return new BasicContextDisposer(this);
@@ -76,7 +76,7 @@ namespace IonFar.SharePoint.Migration.Providers
                         var clientContext = _contextManager._context;
                         _contextManager._log = null;
                         _contextManager._context = null;
-                        log.Information("Disposing context {0}", clientContext.Url);
+                        log.Verbose("Disposing context {0}", clientContext.Url);
                         clientContext.Dispose();
                     }
                     disposedValue = true;
