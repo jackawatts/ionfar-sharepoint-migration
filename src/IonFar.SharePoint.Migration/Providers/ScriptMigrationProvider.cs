@@ -35,36 +35,5 @@ namespace IonFar.SharePoint.Migration.Providers
             }
         }
 
-        class ScriptMigration : IMigration
-        {
-            string _filePath;
-
-            public ScriptMigration(string filePath)
-            {
-                _filePath = filePath;
-            }
-
-            public string Name
-            {
-                get
-                {
-                    var fileName = System.IO.Path.GetFileName(_filePath);
-                    return fileName;
-                }
-            }
-
-            public string Note
-            {
-                get
-                {
-                    return _filePath;
-                }
-            }
-
-            public void Apply(IContextManager contextManager, IUpgradeLog logger)
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }

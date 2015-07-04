@@ -11,8 +11,6 @@ namespace IonFar.SharePoint.Migration.Sync
     public class UrlTokenPreprocessor : ITextFilePreprocessor
     {
         private static readonly Regex tokenRegex = new Regex(@"~site/|~sitecollection/");
-        private Site _site;
-        private Web _web;
 
         /// <summary>
         /// Replaces ~sitecollection/ and ~site/ references

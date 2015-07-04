@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using IonFar.SharePoint.Migration.Providers;
 using System.Collections.Generic;
 using IonFar.SharePoint.Migration.Sync;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace IonFar.SharePoint.Migration.Services
 {
@@ -257,6 +259,10 @@ namespace IonFar.SharePoint.Migration.Services
                 //{
                 //    throw new NotSupportedException("Recursive not supported yet");
                 //}
+
+                var assembly = Assembly.GetExecutingAssembly();
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                _configuration.Log.Information("IonFar SharePoint Migrator v" + fvi.FileVersion);
 
                 _configuration.Log.Information("Uploading folder '{0}'", destinationPrefixedUrl);
 

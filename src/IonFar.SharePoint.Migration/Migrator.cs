@@ -39,7 +39,7 @@ namespace IonFar.SharePoint.Migration
 
                     var assembly = Assembly.GetExecutingAssembly();
                     var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                    _configuration.Log.Information("IonFar.SharePoint.Migrator v" + fvi.FileVersion);
+                    _configuration.Log.Information("IonFar SharePoint Migrator v" + fvi.FileVersion);
                     _configuration.Log.Information("Starting upgrade against SharePoint instance at " + clientContext.Url);
 
                     var availableMigrations = _configuration.MigrationProviders.SelectMany(provider => provider.GetMigrations(_configuration.ContextManager, _configuration.Log));

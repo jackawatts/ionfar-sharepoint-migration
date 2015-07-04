@@ -1,16 +1,16 @@
-﻿using System.Reflection;
-using System.Security;
-using IonFar.SharePoint.Migration;
-using Microsoft.SharePoint.Client;
-using TestApplication.Migrations;
-using System;
+﻿using IonFar.SharePoint.Migration;
 using IonFar.SharePoint.Migration.Providers;
-using System.Net;
 using IonFar.SharePoint.Migration.Services;
-using System.Collections.Generic;
-using System.Web;
 using IonFar.SharePoint.Migration.Sync;
+using Microsoft.SharePoint.Client;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Security;
+using System.Web;
+using TestApplication.Migrations;
 
 namespace TestApplication
 {
@@ -29,8 +29,8 @@ namespace TestApplication
             SecureString securePassword = GetSecureStringFromString(password);
             ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
-            TestBasicMigration(webUrl, credentials);
-            TestFolderUpload(webUrl, credentials);
+//            TestBasicMigration(webUrl, credentials);
+//            TestFolderUpload(webUrl, credentials);
             TestScriptMigration(webUrl, credentials);
 
             Console.WriteLine();
