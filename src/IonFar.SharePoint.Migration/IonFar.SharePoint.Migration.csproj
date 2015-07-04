@@ -106,6 +106,7 @@
     <Compile Include="MigrationResult.cs" />
     <Compile Include="Providers\AssemblyMigrationProvider.cs" />
     <Compile Include="MigratorConfiguration.cs" />
+    <Compile Include="Providers\ScriptException.cs" />
     <Compile Include="Providers\ScriptHost.cs" />
     <Compile Include="Providers\ScriptHostRawUI.cs" />
     <Compile Include="Providers\ScriptHostUI.cs" />

@@ -83,13 +83,14 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void WriteLine(string value)
         {
-            Console.WriteLine("*WriteLine* {0}", value);
-            //throw new NotImplementedException();
+            //Console.WriteLine("*WriteLine* {0}", value);
+            throw new NotImplementedException();
         }
 
         public override void WriteProgress(long sourceId, ProgressRecord record)
         {
-            throw new NotImplementedException("WriteProgress not implemented");
+            Console.WriteLine("*Progress* {0} {1} {2} {3}", record.ActivityId, record.Activity, record.StatusDescription, record.PercentComplete);
+            //throw new NotImplementedException("WriteProgress not implemented");
         }
 
         public override void WriteVerboseLine(string message)

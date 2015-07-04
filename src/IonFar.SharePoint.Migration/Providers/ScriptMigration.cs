@@ -52,6 +52,7 @@ namespace IonFar.SharePoint.Migration.Providers
                 {
                     shell.Runspace = runspace;
 
+                    shell.AddScript("$ErrorActionPreference = 'Stop';");
                     shell.AddScript(script);
 
                     // use "AddParameter" to add a single parameter to the last command/script on the pipeline.
@@ -83,6 +84,15 @@ namespace IonFar.SharePoint.Migration.Providers
                     {
                         //TODO: handle/process the output items if required
                         Console.WriteLine(outputItem.BaseObject.ToString());
+                    }
+
+                    if (shell.HadErrors)
+                    {
+                        throw new ScriptException(string.Format("{0}. {1}", shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason));
+                    }
+                    if (host.ExitCode != 0)
+                    {
+                        throw new ScriptException(string.Format("Script exited with code: {0}", host.ExitCode));
                     }
                 }
             }

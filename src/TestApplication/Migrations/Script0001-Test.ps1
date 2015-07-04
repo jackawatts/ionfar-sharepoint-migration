@@ -5,4 +5,11 @@
 Write-Host "Running Script0001-Test"
 Write-Verbose "verbose" -Verbose
 Write-Warning "warning"
-Exit 5
+
+# Errors will stop the script
+#Write-Error "error"
+
+Write-Progress "activity" "status"
+
+# Non-zero exit code will stop the script
+#Exit 5
