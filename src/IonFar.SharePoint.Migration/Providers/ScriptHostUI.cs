@@ -59,14 +59,14 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void Write(string value)
         {
-            Console.Write(value);
+            Console.Write("##" + value);
             //Console.WriteLine("*Write* {0}", value);
             //throw new NotImplementedException("Write not implemented");
         }
 
         public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
         {
-            Console.Write(value);
+            Console.Write("$$" + value);
             //Console.WriteLine("*Write FG={0} BG={1}* {2}", foregroundColor, backgroundColor, value);
             //throw new NotImplementedException("Write (color) not implemented");
         }

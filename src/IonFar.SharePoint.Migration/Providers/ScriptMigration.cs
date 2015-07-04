@@ -41,7 +41,7 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public void Apply(IContextManager contextManager, IUpgradeLog logger)
         {
-            var script = System.IO.File.ReadAllText(_filePath);
+            //var script = System.IO.File.ReadAllText(_filePath);
 
             var host = new ScriptHost();
 
@@ -52,11 +52,22 @@ namespace IonFar.SharePoint.Migration.Providers
                 {
                     shell.Runspace = runspace;
 
+                    shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
                     shell.AddScript("$ErrorActionPreference = 'Stop';");
-                    shell.AddScript(script);
+                    //shell.AddScript("$PSScriptRoot = 'C:\\Temp\\';");
+                    shell.AddScript("$Test1 = 'Test';");
+
+                    //shell.AddScript("$MyInvocation.MyCommand = Add-Member -InputObject $MyInvocation.MyCommand -NotePropertyName Path -NotePropertyValue 'C:\\Temp\\test.txt' -PassThru;");
+                    //shell.AddScript(script);
+                    //shell.AddScript("& \"" + _filePath + "\"");
+                    shell.AddCommand(_filePath);
+                    //shell.AddScript(_filePath);
+                    //shell.AddArgument(contextManager.CurrentContext.Url);
 
                     // use "AddParameter" to add a single parameter to the last command/script on the pipeline.
-                    //shell.AddParameter("Url", contextManager.CurrentContext.Url);
+
+                    // TODO: Need to check if script has parameters before adding them
+                    shell.AddParameter("Url", contextManager.CurrentContext.Url);
                     //shell.AddParameter("Credentials", contextManager.CurrentContext.Credentials);
 
                     PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
@@ -104,11 +115,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Debug: {0}", item);
+                Console.WriteLine("@Debug: {0}", item);
             }
             else
             {
-                Console.WriteLine("Debug");
+                Console.WriteLine("@Debug");
             }
         }
 
@@ -118,11 +129,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Error: {0}", item);
+                Console.WriteLine("@Error: {0}", item);
             }
             else
             {
-                Console.WriteLine("Error");
+                Console.WriteLine("@Error");
             }
         }
 
@@ -132,11 +143,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Progress: {0}", item);
+                Console.WriteLine("@Progress: {0}", item);
             }
             else
             {
-                Console.WriteLine("Progress");
+                Console.WriteLine("@Progress");
             }
         }
 
@@ -146,11 +157,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Verbose: {0}", item);
+                Console.WriteLine("@Verbose: {0}", item);
             }
             else
             {
-                Console.WriteLine("Verbose");
+                Console.WriteLine("@Verbose");
             }
         }
 
@@ -160,11 +171,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Warning: {0}", item);
+                Console.WriteLine("@Warning: {0}", item);
             }
             else
             {
-                Console.WriteLine("Warning");
+                Console.WriteLine("@Warning");
             }
         }
 
@@ -174,11 +185,11 @@ namespace IonFar.SharePoint.Migration.Providers
             if (items != null)
             {
                 var item = items[e.Index];
-                Console.WriteLine("Output: {0}", item);
+                Console.WriteLine("@Output: {0}", item);
             }
             else
             {
-                Console.WriteLine("Output");
+                Console.WriteLine("@Output");
             }
         }
     }
