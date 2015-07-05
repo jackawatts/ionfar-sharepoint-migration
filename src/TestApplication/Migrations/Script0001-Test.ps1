@@ -38,6 +38,7 @@ Write-Output "  SPCredentials: $SPCredentials"
 Write-Output "  SPUserName: $SPUserName"
 Write-Output "  SPSecurePassword: $SPSecurePassword"
 Write-Output "  SPPassword: $SPPassword"
+Write-Output "  SPVariables: $SPVariables [$($SPVariables['Other'])]"
 
 Write-Host "A host message"
 Write-Output "Output string"

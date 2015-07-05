@@ -17,10 +17,12 @@ namespace IonFar.SharePoint.Migration.Providers
         //      https://msdn.microsoft.com/en-us/library/ee706551(v=vs.85).aspx
 
         string _filePath;
+        Dictionary<string, object> _variables;
 
-        public ScriptMigration(string filePath)
+        public ScriptMigration(string filePath, IDictionary<string,object> variables)
         {
             _filePath = filePath;
+            _variables = new Dictionary<string, object>(variables);
         }
 
         public string Name
@@ -62,6 +64,7 @@ namespace IonFar.SharePoint.Migration.Providers
                     psCredential = new PSCredential(contextManager.UserName, contextManager.SecurePassword);
                 }
                 runspace.SessionStateProxy.SetVariable("SPCredentials", psCredential);
+                runspace.SessionStateProxy.SetVariable("SPVariables", _variables);
 
                 // TODO: Allow custom parameters to be passed through (from ScriptMigrationProvider)
 
@@ -110,7 +113,14 @@ namespace IonFar.SharePoint.Migration.Providers
                     {
                         shell.AddParameter("Credentials", psCredential);
                     }
-                    // TODO: Support custom parameters (from ScriptMigrationProvider)
+                    // Custom parameters
+                    foreach (var kvp in _variables)
+                    {
+                        if (parameters.Any(p => string.Equals(p, kvp.Key, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            shell.AddParameter(kvp.Key, kvp.Value);
+                        }
+                    }
 
                     // Exit codes not supported... need to check exit within script and convert to error
                     //shell.AddScript("Write-Host \"EXIT: $LastExitCode\";");

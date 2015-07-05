@@ -124,7 +124,9 @@ namespace TestApplication
 
             var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             var scriptsSource = System.IO.Path.Combine(baseFolder, "Migrations");
-            config.MigrationProviders.Add(new ScriptMigrationProvider(scriptsSource));
+            var scriptProvider = new ScriptMigrationProvider(scriptsSource);
+            scriptProvider.Variables.Add("Other", Guid.NewGuid());
+            config.MigrationProviders.Add(scriptProvider);
 
             // Use NullJournal to run the migrations every time
             config.Journal = new NullJournal();
