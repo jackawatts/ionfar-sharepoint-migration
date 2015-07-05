@@ -42,6 +42,7 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public void Apply(IContextManager contextManager, IUpgradeLog logger)
         {
+            // IDEA: The other alternative to a custom host is simply define function Write-Host
             var host = new ScriptHost();
             var parameters = GetScriptParameterNames().ToList();
 
@@ -50,7 +51,9 @@ namespace IonFar.SharePoint.Migration.Providers
                 runspace.Open();
                 runspace.SessionStateProxy.SetVariable("ErrorActionPreference", "Stop");
                 runspace.SessionStateProxy.SetVariable("SPUrl", contextManager.CurrentContext.Url);
-                runspace.SessionStateProxy.SetVariable("SPCredentials", contextManager.CurrentContext.Credentials);
+                runspace.SessionStateProxy.SetVariable("SPContext", contextManager.CurrentContext);
+                var psCredential = new PSCredential(contextManager.UserName, contextManager.SecurePassword);
+                runspace.SessionStateProxy.SetVariable("SPCredentials", psCredential);
 
                 // TODO: Allow custom parameters to be passed through (from ScriptMigrationProvider)
 
@@ -78,7 +81,7 @@ namespace IonFar.SharePoint.Migration.Providers
                     }
                     if (parameters.Any(p => string.Equals(p, "Credentials", StringComparison.InvariantCultureIgnoreCase)))
                     {
-                        shell.AddParameter("Credentials", contextManager.CurrentContext.Credentials);
+                        shell.AddParameter("Credentials", psCredential);
                     }
                     // TODO: Support custom parameters (from ScriptMigrationProvider)
 

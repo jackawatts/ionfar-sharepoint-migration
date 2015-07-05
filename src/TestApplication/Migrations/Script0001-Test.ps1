@@ -42,6 +42,13 @@ Write-Verbose "A verbose message" -Verbose
 Write-Warning "A warning message"
 Write-Progress "activity" "status"
 
+Write-Output "64: $([System.Environment]::Is64BitProcess)"
+
+Import-Module OfficeDevPnP.PowerShell.Commands
+Connect-SPOnline –Url $Url -Credentials $Credentials
+$web = Get-SPOWeb
+Write-Host "Web: $($web.Title)"
+
 # Errors will stop the script
 #Write-Error "An error"
 

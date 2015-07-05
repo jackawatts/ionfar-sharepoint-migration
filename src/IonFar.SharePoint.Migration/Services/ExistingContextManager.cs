@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
+using System.Security;
 
 namespace IonFar.SharePoint.Migration.Services
 {
@@ -14,10 +15,14 @@ namespace IonFar.SharePoint.Migration.Services
     {
         ClientContext _context;
         IUpgradeLog _log;
+        SecureString _password;
+        string _userName;
 
-        public ExistingContextManager(ClientContext existingContext)
+        public ExistingContextManager(ClientContext existingContext, string userName, SecureString password)
         {
             _context = existingContext;
+            _password = password;
+            _userName = userName;
         }
 
         /// <summary>
@@ -28,6 +33,24 @@ namespace IonFar.SharePoint.Migration.Services
             get
             {
                 return _context;
+            }
+        }
+
+        /// <summary>
+        /// Gets the secured password
+        /// </summary>
+        public SecureString SecurePassword { get
+            {
+                return _password;
+            }
+        }
+
+        /// <summary>
+        /// Gets the username
+        /// </summary>
+        public string UserName { get
+            {
+                return _userName;
             }
         }
 

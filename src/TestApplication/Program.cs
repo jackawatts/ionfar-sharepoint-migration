@@ -26,30 +26,18 @@ namespace TestApplication
             string webUrl = args[0];
             string username = args[1];
             string password = args[2];
-            SecureString securePassword = GetSecureStringFromString(password);
-            ICredentials credentials = new SharePointOnlineCredentials(username, securePassword);
 
-//            TestBasicMigration(webUrl, credentials);
-//            TestFolderUpload(webUrl, credentials);
-            TestScriptMigration(webUrl, credentials);
+            //            TestBasicMigration(webUrl, username, password);
+            //            TestFolderUpload(webUrl, username, password);
+            TestScriptMigration(webUrl, username, password);
 
             Console.WriteLine();
             Console.WriteLine("Finished");
 //            Console.ReadLine();
         }
 
-        private static SecureString GetSecureStringFromString(string nonsecureString)
-        {
-            var result = new SecureString();
-            foreach (char c in nonsecureString)
-            {
-                result.AppendChar(c);
-            }
 
-            return result;
-        }
-
-        private static void TestBasicMigration(string webUrl, ICredentials credentials)
+        private static void TestBasicMigration(string webUrl, string username, string password)
         {
             Console.WriteLine();
             Console.WriteLine("# TestBasicMigration #");
@@ -64,16 +52,18 @@ namespace TestApplication
             // Use NullJournal to run the migrations every time
             //config.Journal = new NullJournal();
 
-            config.ContextManager = new BasicContextManager(webUrl, credentials);
+            config.ContextManager = new BasicContextManager(webUrl, username, password);
             var migrator = new Migrator(config);
             var result = migrator.PerformMigration();
 
             // Alternative using ExistingContextManager
             //MigrationResult result;
+            //SecureString securePassword = GetSecureStringFromString(password);
+            //ICredentials credentials = new SharePointOnlineCredentials(username, password);
             //using (var clientContext = new ClientContext(webUrl))
             //{
             //    clientContext.Credentials = credentials;
-            //    config.ContextManager = new ExistingContextManager(clientContext);
+            //    config.ContextManager = new ExistingContextManager(clientContext, null, null);
             //    var migrator = new Migrator(config);
             //    result = migrator.PerformMigration();
             //}
@@ -81,13 +71,13 @@ namespace TestApplication
             Console.WriteLine(result.Successful ? "Done" : "Failed");
         }
 
-        private static void TestFolderUpload(string webUrl, ICredentials credentials)
+        private static void TestFolderUpload(string webUrl, string username, string password)
         {
             Console.WriteLine();
             Console.WriteLine("# TestFolderUpload #");
             
             var config = new SynchronizerConfiguration();
-            config.ContextManager = new BasicContextManager(webUrl, credentials);
+            config.ContextManager = new BasicContextManager(webUrl, username, password);
 
 
             // Store hashes in property bag
@@ -122,7 +112,7 @@ namespace TestApplication
             sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 9999);
         }
         
-        private static void TestScriptMigration(string webUrl, ICredentials credentials)
+        private static void TestScriptMigration(string webUrl, string username, string password)
         {
             Console.WriteLine();
             Console.WriteLine("# TestScriptMigration #");
@@ -139,7 +129,7 @@ namespace TestApplication
             // Use NullJournal to run the migrations every time
             config.Journal = new NullJournal();
 
-            config.ContextManager = new BasicContextManager(webUrl, credentials);
+            config.ContextManager = new BasicContextManager(webUrl, username, password);
             var migrator = new Migrator(config);
             var result = migrator.PerformMigration();
 

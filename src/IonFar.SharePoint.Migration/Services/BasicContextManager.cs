@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using System.Net;
+using System.Security;
 
 namespace IonFar.SharePoint.Migration.Services
 {
@@ -14,19 +15,35 @@ namespace IonFar.SharePoint.Migration.Services
     public class BasicContextManager : IContextManager
     {
         ClientContext _context;
-        ICredentials _credentials;
-        string _sharePointUrl;
         IUpgradeLog _log;
+        SecureString _password;
+        string _sharePointUrl;
+        string _userName;
 
         /// <summary>
         /// Creates a basic context manager
         /// </summary>
         /// <param name="sharePointUrl">URL to use for the context</param>
-        /// <param name="credentials">Credentials to use for the context</param>
-        public BasicContextManager(string sharePointUrl, ICredentials credentials)
+        /// <param name="userName">User name to use</param>
+        /// <param name="userName">Password to use</param>
+        public BasicContextManager(string sharePointUrl, string userName, string password)
         {
             _sharePointUrl = sharePointUrl;
-            _credentials = credentials;
+            _userName = userName;
+            _password = GetSecureStringFromString(password);
+        }
+
+        /// <summary>
+        /// Creates a basic context manager
+        /// </summary>
+        /// <param name="sharePointUrl">URL to use for the context</param>
+        /// <param name="userName">User name to use</param>
+        /// <param name="userName">Password to use</param>
+        public BasicContextManager(string sharePointUrl, string userName, SecureString password)
+        {
+            _sharePointUrl = sharePointUrl;
+            _userName = userName;
+            _password = password;
         }
 
         /// <summary>
@@ -41,6 +58,28 @@ namespace IonFar.SharePoint.Migration.Services
         }
 
         /// <summary>
+        /// Gets the secured password
+        /// </summary>
+        public SecureString SecurePassword
+        {
+            get
+            {
+                return _password;
+            }
+        }
+
+        /// <summary>
+        /// Gets the username
+        /// </summary>
+        public string UserName
+        {
+            get
+            {
+                return _userName;
+            }
+        }
+
+        /// <summary>
         /// Tells the context manager when it is starting, and completing, a migration context
         /// </summary>
         /// <param name="log">Log to use</param>
@@ -49,8 +88,23 @@ namespace IonFar.SharePoint.Migration.Services
             _log = log;
             _log.Verbose("Creating context {0}", _sharePointUrl);
             _context = new ClientContext(_sharePointUrl);
-            _context.Credentials = _credentials;
+            var credentials = new SharePointOnlineCredentials(_userName, _password);
+            _context.Credentials = credentials;
             return new BasicContextDisposer(this);
+        }
+        
+        /// <summary>
+        /// Converts plain text to a secure string
+        /// </summary>
+        public static SecureString GetSecureStringFromString(string nonsecureString)
+        {
+            var result = new SecureString();
+            foreach (char c in nonsecureString)
+            {
+                result.AppendChar(c);
+            }
+
+            return result;
         }
 
         // Wrapper to dispose of the context
