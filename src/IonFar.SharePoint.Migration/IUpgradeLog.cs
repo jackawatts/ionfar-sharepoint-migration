@@ -29,6 +29,13 @@ namespace IonFar.SharePoint.Migration
         void Information(string format, params object[] args);
 
         /// <summary>
+        /// Writes a verbose message to the log.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The args.</param>
+        void Verbose(string format, params object[] args);
+
+        /// <summary>
         /// Writes a warning message to the log.
         /// </summary>
         /// <param name="format">The format.</param>
@@ -36,10 +43,10 @@ namespace IonFar.SharePoint.Migration
         void Warning(string format, params object[] args);
 
         /// <summary>
-        /// Writes a verbose message to the log.
+        /// Writes directly to the log (no line break).
         /// </summary>
         /// <param name="format">The format.</param>
         /// <param name="args">The args.</param>
-        void Verbose(string format, params object[] args);
+        void Write(string format, params object[] args);
     }
 }

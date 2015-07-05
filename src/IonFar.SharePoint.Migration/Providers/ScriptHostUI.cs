@@ -13,8 +13,10 @@ namespace IonFar.SharePoint.Migration.Providers
     class ScriptHostUI : PSHostUserInterface
     {
         PSHostRawUserInterface _hostRawUI;
+        IUpgradeLog _log;
 
-        public ScriptHostUI() {
+        public ScriptHostUI(IUpgradeLog logger) {
+            _log = logger;
             _hostRawUI = new ScriptHostRawUI();
         }
 
@@ -59,14 +61,15 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void Write(string value)
         {
-            Console.Write("##" + value);
-            //Console.WriteLine("*Write* {0}", value);
+            _log.Write(value);
+            //Console.Write("##" + value);
             //throw new NotImplementedException("Write not implemented");
         }
 
         public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
         {
-            Console.Write("$$" + value);
+            _log.Write(value);
+            //Console.Write("$$" + value);
             //Console.WriteLine("*Write FG={0} BG={1}* {2}", foregroundColor, backgroundColor, value);
             //throw new NotImplementedException("Write (color) not implemented");
         }
@@ -89,19 +92,22 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void WriteProgress(long sourceId, ProgressRecord record)
         {
-            Console.WriteLine("*Progress* {0} {1} {2} {3}", record.ActivityId, record.Activity, record.StatusDescription, record.PercentComplete);
+            _log.Information("Progress: {0}", record);
+            //Console.WriteLine("*Progress* {0} {1} {2} {3}", record.ActivityId, record.Activity, record.StatusDescription, record.PercentComplete);
             //throw new NotImplementedException("WriteProgress not implemented");
         }
 
         public override void WriteVerboseLine(string message)
         {
-            Console.WriteLine("*Verbose* {0}", message);
+            _log.Verbose(message);
+            //Console.WriteLine("*Verbose* {0}", message);
             //throw new NotImplementedException("WriteVerboseLine not implemented");
         }
 
         public override void WriteWarningLine(string message)
         {
-            Console.WriteLine("*Warning* {0}", message);
+            _log.Warning(message);
+            //Console.WriteLine("*Warning* {0}", message);
             //throw new NotImplementedException("WriteWarningLine not implemented");
         }
     }

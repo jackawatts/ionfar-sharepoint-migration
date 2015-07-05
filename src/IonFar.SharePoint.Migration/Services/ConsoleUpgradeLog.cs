@@ -71,6 +71,16 @@ namespace IonFar.SharePoint.Migration.Services
             }
         }
 
+        /// <summary>
+        /// Writes directly to the log (no line break).
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The args.</param>
+        public void Write(string format, params object[] args)
+        {
+            Console.Write(format, args);
+        }
+
         private static void WriteLine(ConsoleColor color, string format, object[] args)
         {
             Console.ForegroundColor = color;

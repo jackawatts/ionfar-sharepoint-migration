@@ -43,7 +43,8 @@ namespace IonFar.SharePoint.Migration.Providers
         public void Apply(IContextManager contextManager, IUpgradeLog logger)
         {
             // IDEA: The other alternative to a custom host is simply define function Write-Host
-            var host = new ScriptHost();
+            var host = new ScriptHost(logger);
+            var outputLogger = new OutputLogger(logger);
             var parameters = GetScriptParameterNames().ToList();
 
             using (var runspace = RunspaceFactory.CreateRunspace(host))
@@ -69,20 +70,8 @@ namespace IonFar.SharePoint.Migration.Providers
                     shell.Runspace = runspace;
 
                     shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
-                    //shell.AddScript("$ErrorActionPreference = 'Stop';");
-                    //shell.AddScript("$PSScriptRoot = 'C:\\Temp\\';");
-                    //shell.AddScript("$Test1 = 'Test';");
 
-                    //shell.AddScript("$MyInvocation.MyCommand = Add-Member -InputObject $MyInvocation.MyCommand -NotePropertyName Path -NotePropertyValue 'C:\\Temp\\test.txt' -PassThru;");
-                    //shell.AddScript(script);
-                    //shell.AddScript("& \"" + _filePath + "\"");
                     shell.AddCommand(_filePath);
-                    //shell.AddScript(_filePath);
-                    //shell.AddArgument(contextManager.CurrentContext.Url);
-
-                    // use "AddParameter" to add a single parameter to the last command/script on the pipeline.
-
-                    // Check if script has parameters before adding them
                     if (parameters.Any(p => string.Equals(p, "Context", StringComparison.InvariantCultureIgnoreCase)))
                     {
                         shell.AddParameter("Context", contextManager.CurrentContext);
@@ -108,26 +97,29 @@ namespace IonFar.SharePoint.Migration.Providers
                     }
                     // TODO: Support custom parameters (from ScriptMigrationProvider)
 
+                    shell.AddScript("Exit $LastExitCode;");
+
                     PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
-                    outputCollection.DataAdded += OutputCollection_DataAdded; ;
+                    //outputCollection.DataAdded += OutputCollection_DataAdded;
+                    outputCollection.DataAdded += outputLogger.OutputCollection_DataAdded;
                     shell.Streams.Debug.DataAdded += Debug_DataAdded;
                     shell.Streams.Error.DataAdded += Error_DataAdded;
-                    shell.Streams.Progress.DataAdded += Progress_DataAdded;
-                    shell.Streams.Verbose.DataAdded += Verbose_DataAdded;
-                    shell.Streams.Warning.DataAdded += Warning_DataAdded;
+                    //shell.Streams.Progress.DataAdded += Progress_DataAdded;
+                    //shell.Streams.Verbose.DataAdded += Verbose_DataAdded;
+                    //shell.Streams.Warning.DataAdded += Warning_DataAdded;
 
                     IAsyncResult result = shell.BeginInvoke<PSObject, PSObject>(null, outputCollection);
 
                     while (result.IsCompleted == false)
                     {
-                        Console.WriteLine("Waiting for pipeline to finish...");
+                        //Console.WriteLine("Waiting for pipeline to finish...");
                         Thread.Sleep(1000);
 
-                        // might want to place a timeout here...
+                        // TODO: Add timeout (configured from ScriptMigrationProvider)
                     }
 
-                    Console.WriteLine("Execution has stopped. Errors: {0}. Pipeline state: {1}, Reason: {2}", shell.HadErrors, shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason);
-                    Console.WriteLine("Host. ShouldExit: {0}. ExitCode: {1}", host.ShouldExit, host.ExitCode);
+                    //Console.WriteLine("**Execution has stopped. Errors: {0}. Pipeline state: {1}, Reason: {2}", shell.HadErrors, shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason);
+                    //Console.WriteLine("**Host. ShouldExit: {0}. ExitCode: {1}", host.ShouldExit, host.ExitCode);
 
                     //Console.WriteLine("Output (after script run):");
                     //foreach (PSObject outputItem in outputCollection)
@@ -136,14 +128,28 @@ namespace IonFar.SharePoint.Migration.Providers
                     //    Console.WriteLine(outputItem.BaseObject.ToString());
                     //}
 
-                    if (shell.HadErrors)
-                    {
-                        throw new ScriptException(string.Format("{0}. {1}", shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason));
-                    }
                     if (host.ExitCode != 0)
                     {
+                        logger.Error("Script exited with code: {0}", host.ExitCode);
+                        if (shell.HadErrors)
+                        {
+                            foreach (var error in shell.Streams.Error)
+                            {
+                                logger.Error("{0}", error);
+                            }
+                        }
                         throw new ScriptException(string.Format("Script exited with code: {0}", host.ExitCode));
                     }
+                    if (shell.HadErrors)
+                    {
+                        logger.Error("Script had errors. State: {0}", shell.InvocationStateInfo.State);
+                        foreach (var error in shell.Streams.Error)
+                        {
+                            logger.Error("{0}", error);
+                        }
+                        throw new ScriptException(string.Format("{0}. {1}", shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason));
+                    }
+                    logger.Verbose("Script '{0}' complete", _filePath);
                 }
             }
         }
@@ -286,59 +292,83 @@ namespace IonFar.SharePoint.Migration.Providers
             }
         }
 
-        private void Progress_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var items = sender as IList;
-            if (items != null)
-            {
-                var item = items[e.Index];
-                Console.WriteLine("@Progress: {0}", item);
-            }
-            else
-            {
-                Console.WriteLine("@Progress");
-            }
-        }
+        //private void Progress_DataAdded(object sender, DataAddedEventArgs e)
+        //{
+        //    var items = sender as IList;
+        //    if (items != null)
+        //    {
+        //        var item = items[e.Index];
+        //        Console.WriteLine("@Progress: {0}", item);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("@Progress");
+        //    }
+        //}
 
-        private void Verbose_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var items = sender as IList;
-            if (items != null)
-            {
-                var item = items[e.Index];
-                Console.WriteLine("@Verbose: {0}", item);
-            }
-            else
-            {
-                Console.WriteLine("@Verbose");
-            }
-        }
+        //private void Verbose_DataAdded(object sender, DataAddedEventArgs e)
+        //{
+        //    var items = sender as IList;
+        //    if (items != null)
+        //    {
+        //        var item = items[e.Index];
+        //        Console.WriteLine("@Verbose: {0}", item);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("@Verbose");
+        //    }
+        //}
 
-        private void Warning_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var items = sender as IList;
-            if (items != null)
-            {
-                var item = items[e.Index];
-                Console.WriteLine("@Warning: {0}", item);
-            }
-            else
-            {
-                Console.WriteLine("@Warning");
-            }
-        }
+        //private void Warning_DataAdded(object sender, DataAddedEventArgs e)
+        //{
+        //    var items = sender as IList;
+        //    if (items != null)
+        //    {
+        //        var item = items[e.Index];
+        //        Console.WriteLine("@Warning: {0}", item);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("@Warning");
+        //    }
+        //}
 
-        private void OutputCollection_DataAdded(object sender, DataAddedEventArgs e)
+        //private void OutputCollection_DataAdded(object sender, DataAddedEventArgs e)
+        //{
+        //    var items = sender as IList;
+        //    if (items != null)
+        //    {
+        //        var item = items[e.Index];
+        //        Console.WriteLine("@Output: {0}", item);
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("@Output");
+        //    }
+        //}
+
+        class OutputLogger
         {
-            var items = sender as IList;
-            if (items != null)
+            IUpgradeLog _log;
+
+            public OutputLogger(IUpgradeLog logger)
             {
-                var item = items[e.Index];
-                Console.WriteLine("@Output: {0}", item);
+                _log = logger;
             }
-            else
+
+            public void OutputCollection_DataAdded(object sender, DataAddedEventArgs e)
             {
-                Console.WriteLine("@Output");
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Information("{0}", item);
+                }
+                catch(Exception ex)
+                {
+                    _log.Warning("Exception logging output: {0}", ex);
+                }
             }
         }
     }

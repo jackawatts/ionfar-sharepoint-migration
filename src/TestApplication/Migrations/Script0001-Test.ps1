@@ -41,12 +41,10 @@ Write-Output "  SPPassword: $SPPassword"
 
 Write-Host "A host message"
 Write-Output "Output string"
-Write-Output [DateTimeOffset]::Now
+Write-Output ([DateTimeOffset]::Now)
 Write-Verbose "A verbose message" -Verbose
 Write-Warning "A warning message"
 Write-Progress "activity" "status"
-
-Write-Output "64: $([System.Environment]::Is64BitProcess)"
 
 # Using .NET directly -- from variable (could also use parameter)
 $web = $SPContext.Web
@@ -63,5 +61,5 @@ Write-Output "Web (Cmdlet): $($web.Title)"
 # Errors will stop the script
 #Write-Error "An error"
 
-# Non-zero exit code will stop the script
+# Non-zero exit code 
 #Exit 5

@@ -20,10 +20,10 @@ namespace IonFar.SharePoint.Migration.Providers
         private bool _shouldExit;
         private PSHostUserInterface _hostUI;
         private Version _version;
-
-        public ScriptHost()
+        
+        public ScriptHost(IUpgradeLog logger)
         {
-            _hostUI = new ScriptHostUI();
+            _hostUI = new ScriptHostUI(logger);
             _id = Guid.NewGuid();
             _originalCultureInfo = Thread.CurrentThread.CurrentCulture;
             _originalUICultureInfo = Thread.CurrentThread.CurrentUICulture;
