@@ -50,9 +50,16 @@ namespace IonFar.SharePoint.Migration.Providers
             {
                 runspace.Open();
                 runspace.SessionStateProxy.SetVariable("ErrorActionPreference", "Stop");
-                runspace.SessionStateProxy.SetVariable("SPUrl", contextManager.CurrentContext.Url);
                 runspace.SessionStateProxy.SetVariable("SPContext", contextManager.CurrentContext);
-                var psCredential = new PSCredential(contextManager.UserName, contextManager.SecurePassword);
+                runspace.SessionStateProxy.SetVariable("SPUrl", contextManager.CurrentContext.Url);
+                runspace.SessionStateProxy.SetVariable("SPUserName", contextManager.UserName);
+                runspace.SessionStateProxy.SetVariable("SPPassword", contextManager.Password);
+                runspace.SessionStateProxy.SetVariable("SPSecurePassword", contextManager.SecurePassword);
+                PSCredential psCredential = null;
+                if (!string.IsNullOrWhiteSpace(contextManager.UserName) && contextManager.SecurePassword != null)
+                {
+                    psCredential = new PSCredential(contextManager.UserName, contextManager.SecurePassword);
+                }
                 runspace.SessionStateProxy.SetVariable("SPCredentials", psCredential);
 
                 // TODO: Allow custom parameters to be passed through (from ScriptMigrationProvider)
@@ -76,8 +83,24 @@ namespace IonFar.SharePoint.Migration.Providers
                     // use "AddParameter" to add a single parameter to the last command/script on the pipeline.
 
                     // Check if script has parameters before adding them
+                    if (parameters.Any(p => string.Equals(p, "Context", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        shell.AddParameter("Context", contextManager.CurrentContext);
+                    }
                     if (parameters.Any(p => string.Equals(p, "Url", StringComparison.InvariantCultureIgnoreCase))) {
                         shell.AddParameter("Url", contextManager.CurrentContext.Url);
+                    }
+                    if (parameters.Any(p => string.Equals(p, "UserName", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        shell.AddParameter("UserName", contextManager.UserName);
+                    }
+                    if (parameters.Any(p => string.Equals(p, "Password", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        shell.AddParameter("Password", contextManager.Password);
+                    }
+                    if (parameters.Any(p => string.Equals(p, "SecurePassword", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        shell.AddParameter("SecurePassword", contextManager.SecurePassword);
                     }
                     if (parameters.Any(p => string.Equals(p, "Credentials", StringComparison.InvariantCultureIgnoreCase)))
                     {

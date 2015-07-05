@@ -16,7 +16,8 @@ namespace IonFar.SharePoint.Migration.Services
     {
         ClientContext _context;
         IUpgradeLog _log;
-        SecureString _password;
+        string _password;
+        SecureString _securePassword;
         string _sharePointUrl;
         string _userName;
 
@@ -30,7 +31,8 @@ namespace IonFar.SharePoint.Migration.Services
         {
             _sharePointUrl = sharePointUrl;
             _userName = userName;
-            _password = GetSecureStringFromString(password);
+            _password = password;
+            _securePassword = GetSecureStringFromString(password);
         }
 
         /// <summary>
@@ -39,11 +41,11 @@ namespace IonFar.SharePoint.Migration.Services
         /// <param name="sharePointUrl">URL to use for the context</param>
         /// <param name="userName">User name to use</param>
         /// <param name="userName">Password to use</param>
-        public BasicContextManager(string sharePointUrl, string userName, SecureString password)
+        public BasicContextManager(string sharePointUrl, string userName, SecureString securePassword)
         {
             _sharePointUrl = sharePointUrl;
             _userName = userName;
-            _password = password;
+            _securePassword = securePassword;
         }
 
         /// <summary>
@@ -58,13 +60,24 @@ namespace IonFar.SharePoint.Migration.Services
         }
 
         /// <summary>
+        /// Gets the password
+        /// </summary>
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+        }
+
+        /// <summary>
         /// Gets the secured password
         /// </summary>
         public SecureString SecurePassword
         {
             get
             {
-                return _password;
+                return _securePassword;
             }
         }
 
@@ -88,7 +101,7 @@ namespace IonFar.SharePoint.Migration.Services
             _log = log;
             _log.Verbose("Creating context {0}", _sharePointUrl);
             _context = new ClientContext(_sharePointUrl);
-            var credentials = new SharePointOnlineCredentials(_userName, _password);
+            var credentials = new SharePointOnlineCredentials(_userName, _securePassword);
             _context.Credentials = credentials;
             return new BasicContextDisposer(this);
         }

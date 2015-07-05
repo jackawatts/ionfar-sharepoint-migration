@@ -31,9 +31,13 @@ Write-Output "  Credentials: $Credentials"
 Write-Output "  Other: $Other"
 
 # Need to be defined if script is run separately
-Write-Output "Parameters:"
+Write-Output "Variables:"
+Write-Output "  SPContext: $SPContext"
 Write-Output "  SPUrl: $SPUrl"
 Write-Output "  SPCredentials: $SPCredentials"
+Write-Output "  SPUserName: $SPUserName"
+Write-Output "  SPSecurePassword: $SPSecurePassword"
+Write-Output "  SPPassword: $SPPassword"
 
 Write-Host "A host message"
 Write-Output "Output string"
@@ -44,10 +48,17 @@ Write-Progress "activity" "status"
 
 Write-Output "64: $([System.Environment]::Is64BitProcess)"
 
+# Using .NET directly -- from variable (could also use parameter)
+$web = $SPContext.Web
+$SPContext.Load($web)
+$SPContext.ExecuteQuery()
+Write-Output "Web (.NET): $($web.Title)"
+
+# Using PowerShell Cmdlets -- from parameters (could also use variable)
 Import-Module OfficeDevPnP.PowerShell.Commands
 Connect-SPOnline –Url $Url -Credentials $Credentials
 $web = Get-SPOWeb
-Write-Host "Web: $($web.Title)"
+Write-Output "Web (Cmdlet): $($web.Title)"
 
 # Errors will stop the script
 #Write-Error "An error"

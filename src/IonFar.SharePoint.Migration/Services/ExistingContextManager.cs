@@ -15,13 +15,36 @@ namespace IonFar.SharePoint.Migration.Services
     {
         ClientContext _context;
         IUpgradeLog _log;
-        SecureString _password;
+        string _password;
+        SecureString _securePassword;
         string _userName;
 
-        public ExistingContextManager(ClientContext existingContext, string userName, SecureString password)
+        /// <summary>
+        /// Creates an instance
+        /// </summary>
+        public ExistingContextManager(ClientContext existingContext)
+        {
+            _context = existingContext;
+        }
+
+        /// <summary>
+        /// Creates an instance; userName and password is needed for ScriptMigrationProvider
+        /// </summary>
+        public ExistingContextManager(ClientContext existingContext, string userName, string password)
         {
             _context = existingContext;
             _password = password;
+            _securePassword = BasicContextManager.GetSecureStringFromString(password);
+            _userName = userName;
+        }
+
+        /// <summary>
+        /// Creates an instance; userName and password is needed for ScriptMigrationProvider
+        /// </summary>
+        public ExistingContextManager(ClientContext existingContext, string userName, SecureString securePassword)
+        {
+            _context = existingContext;
+            _securePassword = securePassword;
             _userName = userName;
         }
 
@@ -37,11 +60,22 @@ namespace IonFar.SharePoint.Migration.Services
         }
 
         /// <summary>
+        /// Gets the password
+        /// </summary>
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+        }
+
+        /// <summary>
         /// Gets the secured password
         /// </summary>
         public SecureString SecurePassword { get
             {
-                return _password;
+                return _securePassword;
             }
         }
 

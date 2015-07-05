@@ -19,6 +19,11 @@ namespace IonFar.SharePoint.Migration
         ClientContext CurrentContext { get; }
 
         /// <summary>
+        /// Gets the password
+        /// </summary>
+        string Password { get; }
+
+        /// <summary>
         /// Gets the secured password
         /// </summary>
         SecureString SecurePassword { get; }
