@@ -50,7 +50,7 @@ namespace IonFar.SharePoint.Migration.Providers
             using (var runspace = RunspaceFactory.CreateRunspace(host))
             {
                 runspace.Open();
-                runspace.SessionStateProxy.SetVariable("ErrorActionPreference", "Stop");
+                //runspace.SessionStateProxy.SetVariable("ErrorActionPreference", "Stop");
                 runspace.SessionStateProxy.SetVariable("SPContext", contextManager.CurrentContext);
                 runspace.SessionStateProxy.SetVariable("SPUrl", contextManager.CurrentContext.Url);
                 runspace.SessionStateProxy.SetVariable("SPUserName", contextManager.UserName);
@@ -68,8 +68,10 @@ namespace IonFar.SharePoint.Migration.Providers
                 using (var shell = PowerShell.Create())
                 {
                     shell.Runspace = runspace;
+                    var pipeline = runspace.CreatePipeline();
 
                     shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
+                    shell.AddScript("Import-Module OfficeDevPnP.PowerShell.Commands");
 
                     shell.AddCommand(_filePath);
                     if (parameters.Any(p => string.Equals(p, "Context", StringComparison.InvariantCultureIgnoreCase)))
@@ -97,7 +99,8 @@ namespace IonFar.SharePoint.Migration.Providers
                     }
                     // TODO: Support custom parameters (from ScriptMigrationProvider)
 
-                    shell.AddScript("Exit $LastExitCode;");
+                    // Exit codes not supported... need to check exit within script and convert to error
+                    //shell.AddScript("Write-Host \"EXIT: $LastExitCode\";");
 
                     PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
                     //outputCollection.DataAdded += OutputCollection_DataAdded;
@@ -108,7 +111,11 @@ namespace IonFar.SharePoint.Migration.Providers
                     //shell.Streams.Verbose.DataAdded += Verbose_DataAdded;
                     //shell.Streams.Warning.DataAdded += Warning_DataAdded;
 
-                    IAsyncResult result = shell.BeginInvoke<PSObject, PSObject>(null, outputCollection);
+                    var settings = new PSInvocationSettings()
+                    {
+                        ErrorActionPreference = ActionPreference.Stop
+                    };
+                    IAsyncResult result = shell.BeginInvoke<PSObject, PSObject>(null, outputCollection, settings, null, null);
 
                     while (result.IsCompleted == false)
                     {
@@ -118,8 +125,8 @@ namespace IonFar.SharePoint.Migration.Providers
                         // TODO: Add timeout (configured from ScriptMigrationProvider)
                     }
 
-                    //Console.WriteLine("**Execution has stopped. Errors: {0}. Pipeline state: {1}, Reason: {2}", shell.HadErrors, shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason);
-                    //Console.WriteLine("**Host. ShouldExit: {0}. ExitCode: {1}", host.ShouldExit, host.ExitCode);
+                    //Console.WriteLine("** Host. ShouldExit: {0}, ExitCode: {1}, HadErrors: {0}. State: {1}, Reason: {2}", 
+                    //    host.ShouldExit, host.ExitCode, shell.HadErrors, shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason);
 
                     //Console.WriteLine("Output (after script run):");
                     //foreach (PSObject outputItem in outputCollection)

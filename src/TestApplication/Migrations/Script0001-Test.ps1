@@ -53,13 +53,15 @@ $SPContext.ExecuteQuery()
 Write-Output "Web (.NET): $($web.Title)"
 
 # Using PowerShell Cmdlets -- from parameters (could also use variable)
-Import-Module OfficeDevPnP.PowerShell.Commands
+#Import-Module OfficeDevPnP.PowerShell.Commands
 Connect-SPOnline –Url $Url -Credentials $Credentials
 $web = Get-SPOWeb
 Write-Output "Web (Cmdlet): $($web.Title)"
 
+Write-Host "Script Done"
+
 # Errors will stop the script
 #Write-Error "An error"
 
-# Non-zero exit code 
-#Exit 5
+# Throw error also stops script
+#Throw "Thrown error"
