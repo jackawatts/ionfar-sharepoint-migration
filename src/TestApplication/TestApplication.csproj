@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Essential.Diagnostics, Version=1.2.0.0, Culture=neutral, PublicKeyToken=9d041bca93991466, processorArchitecture=MSIL">
+      <HintPath>..\packages\Essential.Diagnostics.1.2.501.0\lib\Essential.Diagnostics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Office.Client.Policy, Version=16.1.3912.1204, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.SharePointOnline.CSOM.16.1.3912.1204\lib\net45\Microsoft.Office.Client.Policy.dll</HintPath>
