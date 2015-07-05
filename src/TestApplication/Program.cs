@@ -120,7 +120,7 @@ namespace TestApplication
             var config = new MigratorConfiguration();
             // Use ConsoleUpgradeLog for coloured console output, 
             // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
-            //config.Log = new ConsoleUpgradeLog();
+            //config.Log = new ConsoleUpgradeLog(true);
 
             var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             var scriptsSource = System.IO.Path.Combine(baseFolder, "Migrations");

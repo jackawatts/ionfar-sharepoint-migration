@@ -33,6 +33,16 @@ namespace IonFar.SharePoint.Migration.Services
         }
 
         /// <summary>
+        /// Writes a critical error message to the log.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The args.</param>
+        public void Critical(string format, params object[] args)
+        {
+            _source.TraceEvent(TraceEventType.Critical, 0, format, args);
+        }
+
+        /// <summary>
         /// Writes an error message to the log.
         /// </summary>
         /// <param name="format">The format.</param>
@@ -72,14 +82,14 @@ namespace IonFar.SharePoint.Migration.Services
             _source.TraceEvent(TraceEventType.Warning, 0, format, args);
         }
 
-        /// <summary>
-        /// Writes directly to the log (no line break).
-        /// </summary>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The args.</param>
-        public void Write(string format, params object[] args)
-        {
-            Trace.Write(string.Format(format, args));
-        }
+        ///// <summary>
+        ///// Writes directly to the log (no line break).
+        ///// </summary>
+        ///// <param name="format">The format.</param>
+        ///// <param name="args">The args.</param>
+        //public void Write(string format, params object[] args)
+        //{
+        //    Trace.Write(string.Format(format, args));
+        //}
     }
 }

@@ -27,7 +27,17 @@ namespace IonFar.SharePoint.Migration.Services
         /// Gets or sets whether to include verbose messages in the output.
         /// </summary>
         public bool IncludeVerbose { get; set; }
- 
+
+        /// <summary>
+        /// Writes a critical error message to the log.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The args.</param>
+        public void Critical(string format, params object[] args)
+        {
+            WriteLine(ConsoleColor.Red, "CRITICAL: " + format, args);
+        }
+
         /// <summary>
         /// Writes an error message to the log.
         /// </summary>
@@ -35,7 +45,7 @@ namespace IonFar.SharePoint.Migration.Services
         /// <param name="args">The args.</param>
         public void Error(string format, params object[] args)
         {
-            WriteLine(ConsoleColor.Red, "ERROR: " + format, args);
+            WriteLine(ConsoleColor.DarkRed, "ERROR: " + format, args);
         }
 
         /// <summary>
@@ -45,7 +55,7 @@ namespace IonFar.SharePoint.Migration.Services
         /// <param name="args">The args.</param>
         public void Information(string format, params object[] args)
         {
-            WriteLine(ConsoleColor.White, format, args);
+            WriteLine(ConsoleColor.Gray, format, args);
         }
 
         /// <summary>
@@ -71,15 +81,15 @@ namespace IonFar.SharePoint.Migration.Services
             }
         }
 
-        /// <summary>
-        /// Writes directly to the log (no line break).
-        /// </summary>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The args.</param>
-        public void Write(string format, params object[] args)
-        {
-            Console.Write(format, args);
-        }
+        ///// <summary>
+        ///// Writes directly to the log (no line break).
+        ///// </summary>
+        ///// <param name="format">The format.</param>
+        ///// <param name="args">The args.</param>
+        //public void Write(string format, params object[] args)
+        //{
+        //    Console.Write(format, args);
+        //}
 
         private static void WriteLine(ConsoleColor color, string format, object[] args)
         {

@@ -15,6 +15,13 @@ namespace IonFar.SharePoint.Migration
     public interface IUpgradeLog
     {
         /// <summary>
+        /// Writes a critical error message to the log.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="args">The args.</param>
+        void Critical(string format, params object[] args);
+
+        /// <summary>
         /// Writes an error message to the log.
         /// </summary>
         /// <param name="format">The format.</param>
@@ -42,11 +49,11 @@ namespace IonFar.SharePoint.Migration
         /// <param name="args">The args.</param>
         void Warning(string format, params object[] args);
 
-        /// <summary>
-        /// Writes directly to the log (no line break).
-        /// </summary>
-        /// <param name="format">The format.</param>
-        /// <param name="args">The args.</param>
-        void Write(string format, params object[] args);
+        ///// <summary>
+        ///// Writes directly to the log (no line break).
+        ///// </summary>
+        ///// <param name="format">The format.</param>
+        ///// <param name="args">The args.</param>
+        //void Write(string format, params object[] args);
     }
 }

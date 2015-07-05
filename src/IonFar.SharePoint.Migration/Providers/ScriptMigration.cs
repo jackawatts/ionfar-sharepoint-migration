@@ -65,13 +65,26 @@ namespace IonFar.SharePoint.Migration.Providers
 
                 // TODO: Allow custom parameters to be passed through (from ScriptMigrationProvider)
 
+                // TODO: Store calculated PSCredential with ScriptHost / ScriptHostUI, so it returns from PromptForCredential
+
+                //var initial = InitialSessionState.Create();
+                //initial.ImportPSModule("OfficeDevPnP.PowerShell.Commands");
+
+                using (var pipeline = runspace.CreatePipeline("Set-ExecutionPolicy Unrestricted -Scope CurrentUser"))
+                {
+                    var output = pipeline.Invoke();
+                }
+                using (var pipeline = runspace.CreatePipeline("Import-Module OfficeDevPnP.PowerShell.Commands"))
+                {
+                    var output = pipeline.Invoke();
+                }
+
                 using (var shell = PowerShell.Create())
                 {
                     shell.Runspace = runspace;
-                    var pipeline = runspace.CreatePipeline();
 
-                    shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
-                    shell.AddScript("Import-Module OfficeDevPnP.PowerShell.Commands");
+                    //shell.AddScript("Set-ExecutionPolicy Unrestricted -Scope CurrentUser;");
+                    //shell.AddScript("Import-Module OfficeDevPnP.PowerShell.Commands");
 
                     shell.AddCommand(_filePath);
                     if (parameters.Any(p => string.Equals(p, "Context", StringComparison.InvariantCultureIgnoreCase)))
@@ -105,11 +118,11 @@ namespace IonFar.SharePoint.Migration.Providers
                     PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
                     //outputCollection.DataAdded += OutputCollection_DataAdded;
                     outputCollection.DataAdded += outputLogger.OutputCollection_DataAdded;
-                    shell.Streams.Debug.DataAdded += Debug_DataAdded;
-                    shell.Streams.Error.DataAdded += Error_DataAdded;
-                    //shell.Streams.Progress.DataAdded += Progress_DataAdded;
-                    //shell.Streams.Verbose.DataAdded += Verbose_DataAdded;
-                    //shell.Streams.Warning.DataAdded += Warning_DataAdded;
+                    shell.Streams.Debug.DataAdded += outputLogger.Debug_DataAdded;
+                    shell.Streams.Error.DataAdded += outputLogger.Error_DataAdded;
+                    shell.Streams.Progress.DataAdded += outputLogger.Progress_DataAdded;
+                    shell.Streams.Verbose.DataAdded += outputLogger.Verbose_DataAdded;
+                    shell.Streams.Warning.DataAdded += outputLogger.Warning_DataAdded;
 
                     var settings = new PSInvocationSettings()
                     {
@@ -271,89 +284,6 @@ namespace IonFar.SharePoint.Migration.Providers
         }
 
 
-        private void Debug_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var items = sender as IList;
-            if (items != null)
-            {
-                var item = items[e.Index];
-                Console.WriteLine("@Debug: {0}", item);
-            }
-            else
-            {
-                Console.WriteLine("@Debug");
-            }
-        }
-
-        private void Error_DataAdded(object sender, DataAddedEventArgs e)
-        {
-            var items = sender as IList;
-            if (items != null)
-            {
-                var item = items[e.Index];
-                Console.WriteLine("@Error: {0}", item);
-            }
-            else
-            {
-                Console.WriteLine("@Error");
-            }
-        }
-
-        //private void Progress_DataAdded(object sender, DataAddedEventArgs e)
-        //{
-        //    var items = sender as IList;
-        //    if (items != null)
-        //    {
-        //        var item = items[e.Index];
-        //        Console.WriteLine("@Progress: {0}", item);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("@Progress");
-        //    }
-        //}
-
-        //private void Verbose_DataAdded(object sender, DataAddedEventArgs e)
-        //{
-        //    var items = sender as IList;
-        //    if (items != null)
-        //    {
-        //        var item = items[e.Index];
-        //        Console.WriteLine("@Verbose: {0}", item);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("@Verbose");
-        //    }
-        //}
-
-        //private void Warning_DataAdded(object sender, DataAddedEventArgs e)
-        //{
-        //    var items = sender as IList;
-        //    if (items != null)
-        //    {
-        //        var item = items[e.Index];
-        //        Console.WriteLine("@Warning: {0}", item);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("@Warning");
-        //    }
-        //}
-
-        //private void OutputCollection_DataAdded(object sender, DataAddedEventArgs e)
-        //{
-        //    var items = sender as IList;
-        //    if (items != null)
-        //    {
-        //        var item = items[e.Index];
-        //        Console.WriteLine("@Output: {0}", item);
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("@Output");
-        //    }
-        //}
 
         class OutputLogger
         {
@@ -364,6 +294,48 @@ namespace IonFar.SharePoint.Migration.Providers
                 _log = logger;
             }
 
+            public void Debug_DataAdded(object sender, DataAddedEventArgs e)
+            {
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Verbose("DEBUG: {0}", item);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warning("Exception logging debug: {0}", ex);
+                }
+            }
+
+            public void Error_DataAdded(object sender, DataAddedEventArgs e)
+            {
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Error("{0}", item);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warning("Exception logging error: {0}", ex);
+                }
+            }
+
+            public void Progress_DataAdded(object sender, DataAddedEventArgs e)
+            {
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Verbose("PROGRESS: {0}", item);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warning("Exception logging progress: {0}", ex);
+                }
+            }
+
             public void OutputCollection_DataAdded(object sender, DataAddedEventArgs e)
             {
                 try
@@ -372,9 +344,37 @@ namespace IonFar.SharePoint.Migration.Providers
                     var item = items[e.Index];
                     _log.Information("{0}", item);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _log.Warning("Exception logging output: {0}", ex);
+                }
+            }
+
+            public void Verbose_DataAdded(object sender, DataAddedEventArgs e)
+            {
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Verbose("{0}", item);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warning("Exception logging verbose: {0}", ex);
+                }
+            }
+
+            public void Warning_DataAdded(object sender, DataAddedEventArgs e)
+            {
+                try
+                {
+                    var items = (IList)sender;
+                    var item = items[e.Index];
+                    _log.Warning("{0}", item);
+                }
+                catch (Exception ex)
+                {
+                    _log.Warning("Exception logging warning: {0}", ex);
                 }
             }
         }

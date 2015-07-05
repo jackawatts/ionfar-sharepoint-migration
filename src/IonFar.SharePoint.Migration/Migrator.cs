@@ -73,7 +73,7 @@ namespace IonFar.SharePoint.Migration
             }
             catch (Exception ex)
             {
-                _configuration.Log.Error(
+                _configuration.Log.Critical(
                     "Migration failed and the environment has been left in a partially complete state, manual intervention may be required.\nException: {0}", ex
                 );
                 return new MigrationResult(appliedMigrations, successful: false, error: ex);

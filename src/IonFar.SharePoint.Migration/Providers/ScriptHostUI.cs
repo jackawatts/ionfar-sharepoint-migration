@@ -61,14 +61,17 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void Write(string value)
         {
-            _log.Write(value);
+            //_log.Write(value);
             //Console.Write("##" + value);
-            //throw new NotImplementedException("Write not implemented");
+            throw new NotImplementedException("Write not implemented");
         }
 
         public override void Write(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
         {
-            _log.Write(value);
+            // NOTE: Write-Host is output via a call to Write, then WriteLine (reset color)
+            _log.Verbose("HOST: {0}", value);
+
+            //_log.Write(value);
             //Console.Write("$$" + value);
             //Console.WriteLine("*Write FG={0} BG={1}* {2}", foregroundColor, backgroundColor, value);
             //throw new NotImplementedException("Write (color) not implemented");
@@ -76,37 +79,65 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public override void WriteDebugLine(string message)
         {
-            throw new NotImplementedException("WriteDebugLine not implemented");
+            // DO NOTHING - Logged via DataAdded handler
+
+            //throw new NotImplementedException("WriteDebugLine not implemented");
         }
 
         public override void WriteErrorLine(string value)
         {
-            throw new NotImplementedException("WriteErrorLine not implemented");
+            // DO NOTHING - Logged via DataAdded handler
+
+            //throw new NotImplementedException("WriteErrorLine not implemented");
         }
 
         public override void WriteLine(string value)
         {
             //Console.WriteLine("*WriteLine* {0}", value);
-            throw new NotImplementedException();
+            throw new NotImplementedException("WriteLine not implemented");
+        }
+
+        public override void WriteLine()
+        {
+            throw new NotImplementedException("WriteLine (empty) not implemented");
+            //base.WriteLine();
+        }
+
+        public override void WriteLine(ConsoleColor foregroundColor, ConsoleColor backgroundColor, string value)
+        {
+            // NOTE: Write-Host is output via a call to Write, then WriteLine (reset color)
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                _log.Verbose("HOST: {0}", value);
+            }
+
+            //throw new NotImplementedException("WriteLine (color) not implemented");
+            //base.WriteLine(foregroundColor, backgroundColor, value);
         }
 
         public override void WriteProgress(long sourceId, ProgressRecord record)
         {
-            _log.Information("Progress: {0}", record);
+            // DO NOTHING - Logged via DataAdded handler
+
+            //_log.Information("Progress: {0}", record);
             //Console.WriteLine("*Progress* {0} {1} {2} {3}", record.ActivityId, record.Activity, record.StatusDescription, record.PercentComplete);
             //throw new NotImplementedException("WriteProgress not implemented");
         }
 
         public override void WriteVerboseLine(string message)
         {
-            _log.Verbose(message);
+            // DO NOTHING - Logged via DataAdded handler
+
+            //_log.Verbose(message);
             //Console.WriteLine("*Verbose* {0}", message);
             //throw new NotImplementedException("WriteVerboseLine not implemented");
         }
 
         public override void WriteWarningLine(string message)
         {
-            _log.Warning(message);
+            // DO NOTHING - Logged via DataAdded handler
+
+            //_log.Warning(message);
             //Console.WriteLine("*Warning* {0}", message);
             //throw new NotImplementedException("WriteWarningLine not implemented");
         }
