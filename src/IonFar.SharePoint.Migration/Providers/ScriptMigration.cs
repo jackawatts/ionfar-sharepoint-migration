@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -41,9 +42,8 @@ namespace IonFar.SharePoint.Migration.Providers
 
         public void Apply(IContextManager contextManager, IUpgradeLog logger)
         {
-            //var script = System.IO.File.ReadAllText(_filePath);
-
             var host = new ScriptHost();
+            var parameters = GetScriptParameterNames().ToList();
 
             using (var runspace = RunspaceFactory.CreateRunspace(host))
             {
@@ -72,9 +72,15 @@ namespace IonFar.SharePoint.Migration.Providers
 
                     // use "AddParameter" to add a single parameter to the last command/script on the pipeline.
 
-                    // TODO: Need to check if script has parameters before adding them
-                    shell.AddParameter("Url", contextManager.CurrentContext.Url);
-                    //shell.AddParameter("Credentials", contextManager.CurrentContext.Credentials);
+                    // Check if script has parameters before adding them
+                    if (parameters.Any(p => string.Equals(p, "Url", StringComparison.InvariantCultureIgnoreCase))) {
+                        shell.AddParameter("Url", contextManager.CurrentContext.Url);
+                    }
+                    if (parameters.Any(p => string.Equals(p, "Credentials", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        shell.AddParameter("Credentials", contextManager.CurrentContext.Credentials);
+                    }
+                    // TODO: Support custom parameters (from ScriptMigrationProvider)
 
                     PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
                     outputCollection.DataAdded += OutputCollection_DataAdded; ;
@@ -115,6 +121,116 @@ namespace IonFar.SharePoint.Migration.Providers
                 }
             }
         }
+
+        private IEnumerable<string> GetScriptParameterNames()
+        {
+            // https://nightroman.wordpress.com/2008/10/16/get-names-of-script-parameters/
+            var script = System.IO.File.ReadAllText(_filePath);
+
+            var mode = 0;
+            var param = true;
+            Collection<PSParseError> errors;
+            var tokens = PSParser.Tokenize(script, out errors);
+
+            for (var i = 0; i < tokens.Count; ++i)
+            {
+                var t = tokens[i];
+
+                // Skip "[]" values
+                if ((t.Type == PSTokenType.Operator) && (t.Content == "["))
+                {
+                    var level = 1;
+                    for (++i; i < tokens.Count; ++i)
+                    {
+                        t = tokens[i];
+                        if (t.Type == PSTokenType.Operator)
+                        {
+                            if (t.Content == "[")
+                            {
+                                ++level;
+                            }
+                            else if (t.Content == "]")
+                            {
+                                --level;
+                                if (level <= 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    continue;
+                }
+
+                // Find and return parameter names
+                switch (t.Type)
+                {
+                    case PSTokenType.NewLine: { break; }
+                    case PSTokenType.Comment: { break; }
+                    case PSTokenType.Command:
+                        {
+                            if (mode <= 1)
+                            {
+                                //yield return;
+                            }
+                            break;
+                        }
+                    case PSTokenType.Keyword:
+                        {
+                            if (mode == 0)
+                            {
+                                if (string.Equals(t.Content, "param", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    mode = 1;
+                                }
+                            }
+                            break;
+                        }
+                    case PSTokenType.GroupStart:
+                        {
+                            if (mode > 0)
+                            {
+                                ++mode;
+                            }
+                            else
+                            {
+                                yield break;
+                            }
+                            break;
+                        }
+                    case PSTokenType.GroupEnd:
+                        {
+                            --mode;
+                            if (mode < 2)
+                            {
+                                yield break;
+                            }
+                            break;
+                        }
+                    case PSTokenType.Variable:
+                        {
+                            if (mode == 2 && param)
+                            {
+                                param = false;
+                                //  if ((!$Pattern) -or($t.Content - like $Pattern)) {
+                                //$t.Content
+                                //  }
+                                yield return t.Content;
+                            }
+                            break;
+                        }
+                    case PSTokenType.Operator:
+                        {
+                            if ((mode == 2) && (t.Content == ","))
+                            {
+                                param = true;
+                            }
+                            break;
+                        }
+                }
+            }
+        }
+
 
         private void Debug_DataAdded(object sender, DataAddedEventArgs e)
         {
