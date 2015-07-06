@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IonFar.SharePoint.Migration", "IonFar.SharePoint.Migration\IonFar.SharePoint.Migration.csproj", "{00B17940-1B52-4A22-933E-A00C37A48093}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{48E143F9-8304-4A37-BB3F-ED1848771DF2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1337F007-334E-4B7D-8A9F-FD2FA666E303}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -17,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		CreatePackage.cmd = CreatePackage.cmd
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F5607AB4-6E5D-4C54-869D-CF09EED0AEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "Examples\TestApplication\TestApplication.csproj", "{48E143F9-8304-4A37-BB3F-ED1848771DF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,5 +37,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{48E143F9-8304-4A37-BB3F-ED1848771DF2} = {F5607AB4-6E5D-4C54-869D-CF09EED0AEF7}
 	EndGlobalSection
 EndGlobal
