@@ -24,7 +24,7 @@ namespace BasicCodeMigration
                  
             config.Log = new ConsoleUpgradeLog(true); // Alternatively use ColoreConsoleTraceListener from Essential.Diagnostics
             config.Journal = new NullJournal(); // Use NullJournal to run the migrations every time
-            config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+            config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetExecutingAssembly()));
             config.ContextManager = new BasicContextManager(webUrl, username, password);
 
             var migrator = new Migrator(config);
