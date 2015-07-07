@@ -2,10 +2,12 @@
 using IonFar.SharePoint.Migration.Providers;
 using IonFar.SharePoint.Migration.Services;
 using System;
-using System.Reflection;
-using TestApplication.Migrations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BasicMigration
+namespace BasicScriptMigration
 {
     class Program
     {
@@ -13,18 +15,20 @@ namespace BasicMigration
         {
             if (args.Length != 3)
             {
-                Console.WriteLine("Format is: BasicMigration.exe sitecollectionurl username password");
+                Console.WriteLine("Format is: BasicScriptMigration.exe sitecollectionurl username password");
                 return;
             }
             string webUrl = args[0];
             string username = args[1];
             string password = args[2];
+            var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var scriptsSource = System.IO.Path.Combine(baseFolder, "Migrations");
 
-            var config = new MigratorConfiguration();       
-                 
+            var config = new MigratorConfiguration();
+
             config.Log = new ConsoleUpgradeLog(true); // Alternatively use ColoreConsoleTraceListener from Essential.Diagnostics
             config.Journal = new NullJournal(); // Use NullJournal to run the migrations every time
-            config.MigrationProviders.Add(new AssemblyMigrationProvider(Assembly.GetAssembly(typeof(ShowTitle))));
+            config.MigrationProviders.Add(new ScriptMigrationProvider(scriptsSource));
             config.ContextManager = new BasicContextManager(webUrl, username, password);
 
             var migrator = new Migrator(config);

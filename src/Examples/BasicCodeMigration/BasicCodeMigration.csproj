@@ -7,8 +7,8 @@
     <ProjectGuid>{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BasicMigration</RootNamespace>
-    <AssemblyName>BasicMigration</AssemblyName>
+    <RootNamespace>BasicCodeMigration</RootNamespace>
+    <AssemblyName>BasicCodeMigration</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

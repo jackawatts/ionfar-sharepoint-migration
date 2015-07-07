@@ -56,13 +56,13 @@ namespace IonFar.SharePoint.Migration
 
                     foreach (var migration in migrationsToRun)
                     {
-                        _configuration.Log.Information(string.Format("Upgrading by running migration '{0}'", migration.Name));
+                        _configuration.Log.Information(string.Format("== Upgrading by running migration '{0}' ==", migration.Name));
 
                         migration.Apply(_configuration.ContextManager, _configuration.Log);
 
                         var migrationInfo =_configuration.Journal.StoreExecutedMigration(_configuration.ContextManager, _configuration.Log, migration);
 
-                        _configuration.Log.Verbose("Migration {0} complete (journal ID: {1})", migrationInfo.Name, migrationInfo.Id);
+                        _configuration.Log.Verbose("Migration '{0}' complete (journal ID: {1})", migrationInfo.Name, migrationInfo.Id);
 
                         appliedMigrations.Add(migrationInfo);
                     }

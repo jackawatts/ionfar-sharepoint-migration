@@ -264,7 +264,7 @@ namespace IonFar.SharePoint.Migration.Services
                 var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
                 _configuration.Log.Information("IonFar SharePoint Synchronizer v" + fvi.FileVersion);
 
-                _configuration.Log.Information("Uploading folder '{0}'", destinationPrefixedUrl);
+                _configuration.Log.Information("== Uploading folder '{0}' ==", destinationPrefixedUrl);
 
                 var destinationServerRelativeUrl = SPUrlUtility.ResolveServerRelativeUrl(_configuration.ContextManager.CurrentContext.Site, web, destinationPrefixedUrl);
                 var destinationFolder = web.GetFolderByServerRelativeUrl(destinationServerRelativeUrl);

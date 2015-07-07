@@ -2,21 +2,21 @@
 using IonFar.SharePoint.Migration;
 using Microsoft.SharePoint.Client;
 
-namespace TestApplication.Migrations
+namespace BasicCodeMigration.Migrations
 {
-    [Migration("Migration0001")]
+    [Migration("Code0001")]
     public class ShowTitle : Migration
     {
         public override void Apply(IContextManager contextManager, IUpgradeLog logger)
         {
+            logger.Information("Running migration for URL: {0}", contextManager.CurrentContext.Url);
+
             var clientContext = contextManager.CurrentContext;
 
             clientContext.Load(clientContext.Web, w => w.Title);
             clientContext.ExecuteQuery();
 
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("Your site title is: " + clientContext.Web.Title);
-            Console.ResetColor();
+            logger.Warning("Site title is: {0}", clientContext.Web.Title);
         }
     }
 }
