@@ -26,73 +26,31 @@ namespace TestApplication
             string username = args[1];
             string password = args[2];
 
-//            TestFolderUpload(webUrl, username, password);
-            TestScriptMigration(webUrl, username, password);
+            ApplyMigrations(webUrl, username, password);
+            SynchroniseFiles(webUrl, username, password);
 
             Console.WriteLine();
             Console.WriteLine("Finished");
 //            Console.ReadLine();
         }
 
-        private static void TestFolderUpload(string webUrl, string username, string password)
+        private static void ApplyMigrations(string webUrl, string username, string password)
         {
             Console.WriteLine();
-            Console.WriteLine("# TestFolderUpload #");
-            
-            var config = new SynchronizerConfiguration();
-            config.ContextManager = new BasicContextManager(webUrl, username, password);
-
-
-            // Store hashes in property bag
-            var hashProvider = new WebPropertyHashProvider();
-            config.HashProvider = hashProvider;
-
-            // Use NullHashProvider to always upload files
-            //config.HashProvider = new NullHashProvider();
-
-            // Will substitute '~site/' and '~sitecollection/'
-            config.Preprocessors.Add(new UrlTokenPreprocessor());
-
-            // Will substitute '$key$' with value
-            var substitutionVariables = new Dictionary<string, string>();
-            substitutionVariables.Add("Message", "Hello");
-            config.Preprocessors.Add(new VariableSubstitutionPreprocessor(substitutionVariables));
-
-
-            var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            var scriptsSource = System.IO.Path.Combine(baseFolder, "Scripts");
-            var scriptsDestinationFolder = "~site/_catalogs/masterpage/scripts";
-
-            // Ensure folder exists, then synchronise all changed files
-            var sync = new Synchronizer(config);
-            var folder = sync.EnsureFolder(scriptsDestinationFolder);
-            var result = sync.SynchronizeFolder(scriptsSource, scriptsDestinationFolder);
-
-            Console.WriteLine(result.Successful ? "Done" : "Failed");
-
-            // Additional utility function to create a ScriptLink, showing how the results can be used
-            var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
-            sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 9999);
-        }
-        
-        private static void TestScriptMigration(string webUrl, string username, string password)
-        {
-            Console.WriteLine();
-            Console.WriteLine("# TestScriptMigration #");
+            Console.WriteLine("= Apply Migrations =");
 
             var config = new MigratorConfiguration();
-            // Use ConsoleUpgradeLog for coloured console output, 
-            // or use something like ColoreConsoleTraceListener from Essential.Diagnostics
-            //config.Log = new ConsoleUpgradeLog(true);
+            config.Journal = new WebPropertyBagJournal("Test_Migrations/");
 
             var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             var scriptsSource = System.IO.Path.Combine(baseFolder, "Migrations");
             var scriptProvider = new ScriptMigrationProvider(scriptsSource);
+
             scriptProvider.Variables.Add("Other", Guid.NewGuid());
             config.MigrationProviders.Add(scriptProvider);
 
             // Use NullJournal to run the migrations every time
-            config.Journal = new NullJournal();
+            //config.Journal = new NullJournal();
 
             // Although basic context can accept plain text password, setting only securePassword prevents it being passed through to $SPPassword
             var securePassword = BasicContextManager.GetSecureStringFromString(password);
@@ -115,6 +73,41 @@ namespace TestApplication
 
             Console.WriteLine(result.Successful ? "Done" : "Failed");
         }
+
+        private static void SynchroniseFiles(string webUrl, string username, string password)
+        {
+            Console.WriteLine();
+            Console.WriteLine("= Synchronise Files =");
+            
+            var config = new SynchronizerConfiguration();
+            config.ContextManager = new BasicContextManager(webUrl, username, password);
+            config.HashProvider = new WebPropertyHashProvider("Test_UploadHash", null);
+
+            // Will substitute '~site/' and '~sitecollection/'
+            config.Preprocessors.Add(new UrlTokenPreprocessor());
+
+            // Will substitute '$key$' with value
+            var substitutionVariables = new Dictionary<string, string>();
+            substitutionVariables.Add("Message", "Hello");
+            config.Preprocessors.Add(new VariableSubstitutionPreprocessor(substitutionVariables));
+
+            var baseFolder = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var scriptsSource = System.IO.Path.Combine(baseFolder, "Scripts");
+            var scriptsDestinationFolder = "~site/_catalogs/masterpage/scripts";
+
+            // Ensure folder exists, then synchronise all changed files
+            var sync = new Synchronizer(config);
+            var folder = sync.EnsureFolder(scriptsDestinationFolder);
+            var result = sync.SynchronizeFolder(scriptsSource, scriptsDestinationFolder);
+
+            // Also use the hash in a script link
+            var jqueryResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("jquery-2.1.4.min.js", StringComparison.InvariantCultureIgnoreCase));
+            sync.EnsureSiteScriptLink("ScriptLink.jQuery", jqueryResult.ServerRelativeUrl, 10000);
+
+            var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
+            sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
+        }
+        
 
     }
 }

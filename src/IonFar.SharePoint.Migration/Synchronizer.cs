@@ -234,7 +234,7 @@ namespace IonFar.SharePoint.Migration.Services
                 var parentFolderPath = string.Join("/", segments.Take(segments.Count() - 1));
 
                 // Recurse
-                var parentFolder = EnsureFolder(parentFolderPath);
+                var parentFolder = EnsureFolderInternal(web, parentFolderPath);
 
                 folder = parentFolder.Folders.Add(lastSegment);
                 _configuration.ContextManager.CurrentContext.Load(folder);

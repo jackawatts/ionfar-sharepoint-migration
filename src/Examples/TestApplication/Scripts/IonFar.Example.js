@@ -1,3 +1,5 @@
 ﻿(function () {
-    alert("$Message$ '~sitecollection/'")
+    $(document).ready(function () {
+        $("ms-promlink-parttitle").text("$Message$ '~sitecollection/'");
+    });
 })();
