@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Provides hash values for comparison before uploading files; use NullHashProvider if not required.

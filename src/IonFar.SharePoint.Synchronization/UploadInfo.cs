@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Represents a synchronized file
     /// </summary>
     public class UploadInfo
     {
-        string _filePath;
-        byte[] _hashValue;
-        string _serverRelativeUrl;
-        bool _changed;
+        private readonly string _filePath;
+        private readonly byte[] _hashValue;
+        private readonly string _serverRelativeUrl;
+        private readonly bool _changed;
 
         /// <summary>
         /// Creates a new instance

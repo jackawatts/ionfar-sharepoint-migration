@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
 using System.Security;
 
@@ -13,11 +9,10 @@ namespace IonFar.SharePoint.Migration.Services
     /// </summary>
     public class ExistingContextManager : IContextManager
     {
-        ClientContext _context;
-        IUpgradeLog _log;
-        string _password;
-        SecureString _securePassword;
-        string _userName;
+        readonly ClientContext _context;
+        readonly string _password;
+        readonly SecureString _securePassword;
+        readonly string _userName;
 
         /// <summary>
         /// Creates an instance
@@ -94,7 +89,6 @@ namespace IonFar.SharePoint.Migration.Services
         /// <param name="log">Log to use</param>
         public IDisposable ContextScope(IUpgradeLog log)
         {
-            _log = log;
             return new NullDisposable();
         }
 

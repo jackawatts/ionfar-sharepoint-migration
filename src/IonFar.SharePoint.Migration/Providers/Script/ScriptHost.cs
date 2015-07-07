@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Management.Automation.Host;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Script
 {
-    class ScriptHost : PSHost
+    public class ScriptHost : PSHost
     {
         private int _exitCode;
-        private Guid _id;
-        private CultureInfo _originalCultureInfo;
-        private CultureInfo _originalUICultureInfo;
-        private bool _shouldExit;
-        private PSHostUserInterface _hostUI;
-        private Version _version;
+        private readonly Guid _id;
+        private readonly CultureInfo _originalCultureInfo;
+        private readonly CultureInfo _originalUICultureInfo;
+        private readonly PSHostUserInterface _hostUI;
+        private readonly Version _version;
         
         public ScriptHost(IUpgradeLog logger)
         {
@@ -28,7 +22,7 @@ namespace IonFar.SharePoint.Migration.Providers
             _originalCultureInfo = Thread.CurrentThread.CurrentCulture;
             _originalUICultureInfo = Thread.CurrentThread.CurrentUICulture;
 
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             _version = new Version(fvi.FileMajorPart, fvi.FileMinorPart, fvi.FileBuildPart, fvi.FilePrivatePart);
         }
@@ -107,7 +101,6 @@ namespace IonFar.SharePoint.Migration.Providers
         /// </summary>
         public override void NotifyBeginApplication()
         {
-            return;
         }
 
         /// <summary>
@@ -118,7 +111,6 @@ namespace IonFar.SharePoint.Migration.Providers
         /// </summary>
         public override void NotifyEndApplication()
         {
-            return;
         }
 
         /// <summary>
@@ -129,7 +121,6 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <param name="exitCode">The exit code to use.</param>
         public override void SetShouldExit(int exitCode)
         {
-            _shouldExit = true;
             _exitCode = exitCode;
         }
 

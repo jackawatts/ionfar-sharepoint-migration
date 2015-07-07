@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Assembly
 {
     /// <summary>
     /// Provides thes migrations contained in an assembly.
@@ -13,14 +10,14 @@ namespace IonFar.SharePoint.Migration.Providers
     /// <remarks>Migrations must be decorated with a <see cref="MigrationAttribute"/></remarks>
     public class AssemblyMigrationProvider : IMigrationProvider
     {
-        Assembly _assemblyContainingMigrations;
-        Func<string, bool> _filter;
+        private readonly System.Reflection.Assembly _assemblyContainingMigrations;
+        private readonly Func<string, bool> _filter;
 
         /// <summary>
         /// Creates a provider for all IMigrations in the assembly.
         /// </summary>
         /// <param name="assemblyContainingMigrations">The assembly containing the migrations to run.</param>
-        public AssemblyMigrationProvider(Assembly assemblyContainingMigrations)
+        public AssemblyMigrationProvider(System.Reflection.Assembly assemblyContainingMigrations)
             : this(assemblyContainingMigrations, name => true)
         {
         }
@@ -30,7 +27,7 @@ namespace IonFar.SharePoint.Migration.Providers
         /// </summary>
         /// <param name="assemblyContainingMigrations">The assembly containing the migrations to run.</param>
         /// <param name="filter">A function that accepts a Type.FullName and returns true if the given type is to be migrated.</param>
-        public AssemblyMigrationProvider(Assembly assemblyContainingMigrations, Func<string, bool> filter)
+        public AssemblyMigrationProvider(System.Reflection.Assembly assemblyContainingMigrations, Func<string, bool> filter)
         {
             _assemblyContainingMigrations = assemblyContainingMigrations;
             _filter = filter;

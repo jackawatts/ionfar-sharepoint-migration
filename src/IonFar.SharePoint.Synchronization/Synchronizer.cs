@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
-using Microsoft.SharePoint.Client;
-using System.Security.Cryptography;
-using IonFar.SharePoint.Migration.Providers;
 using System.Collections.Generic;
-using IonFar.SharePoint.Migration.Sync;
-using System.Reflection;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+using IonFar.SharePoint.Synchronization.Preprocessors;
+using Microsoft.SharePoint.Client;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Synchronizes changed files in a folder to SharePoint, based on hash values

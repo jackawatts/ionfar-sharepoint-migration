@@ -1,12 +1,9 @@
-﻿using Microsoft.SharePoint.Client;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Journals
 {
     /// <summary>
     /// A journal that tracks executed migrations as property bag values with a specific prefix.
@@ -15,7 +12,7 @@ namespace IonFar.SharePoint.Migration.Providers
     {
         public const string DefaultPrefix = "ION_Migration/";
 
-        string _prefix;
+        private readonly string _prefix;
         long _lastId = -1;
         bool _lastIdInitialised;
 
@@ -39,7 +36,8 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <summary>
         /// Gets the migrations that have already been executed.
         /// </summary>
-        /// <param name="clientContext">Context to the SharePoint server</param>
+        /// <param name="contextManager">The Context Manager</param>
+        /// <param name="log">The UpgradeLog.</param>
         public IEnumerable<MigrationInfo> GetExecutedMigrations(IContextManager contextManager, IUpgradeLog log)
         {
             var executedMigrations = new List<MigrationInfo>();
@@ -96,7 +94,8 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <summary>
         /// Records a migration as having been run.
         /// </summary>
-        /// <param name="clientContext">Context to the SharePoint server</param>
+        /// <param name="contextManager">The ContextManager</param>
+        /// <param name="log">The UpgradeLog</param>
         /// <param name="migration">Migration that has been run</param>
         public MigrationInfo StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, IMigration migration)
         {
@@ -114,7 +113,7 @@ namespace IonFar.SharePoint.Migration.Providers
 
             var id = _lastId + 1;
             var migrationInfo = new MigrationInfo(id, migration.Name, migration.Note, DateTimeOffset.UtcNow);
-            var key = _prefix + migrationInfo.Id.ToString();
+            var key = _prefix + migrationInfo.Id;
             properties[key] = JsonConvert.SerializeObject(migrationInfo);
 
             rootWeb.Update();

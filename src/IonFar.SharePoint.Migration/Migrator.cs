@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Microsoft.SharePoint.Client;
-using Newtonsoft.Json;
-using System.Diagnostics;
+//using System.Diagnostics;
 
 namespace IonFar.SharePoint.Migration
 {

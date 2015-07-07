@@ -129,6 +129,10 @@
       <Project>{00b17940-1b52-4a22-933e-a00c37a48093}</Project>
       <Name>IonFar.SharePoint.Migration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\IonFar.SharePoint.Synchronization\IonFar.SharePoint.Synchronization.csproj">
+      <Project>{19afbc93-e3a2-48e3-99bc-72614709cdc6}</Project>
+      <Name>IonFar.SharePoint.Synchronization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

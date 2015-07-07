@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.SharePoint.Client;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Migration.Providers.Assembly
 {
     /// <summary>
     /// Base class for code-based migrations.
@@ -16,7 +16,7 @@ namespace IonFar.SharePoint.Migration
         {
             get
             {
-                return System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+                return Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
             }
         }
 
@@ -27,7 +27,7 @@ namespace IonFar.SharePoint.Migration
         {
             get
             {
-                var migrationType = this.GetType();
+                var migrationType = GetType();
                 var migrationAttribute = migrationType.GetCustomAttribute<MigrationAttribute>(inherit: true);
                 if (migrationAttribute != null)
                 {
@@ -44,7 +44,7 @@ namespace IonFar.SharePoint.Migration
         {
             get
             {
-                var migrationType = this.GetType();
+                var migrationType = GetType();
                 return migrationType.AssemblyQualifiedName;
             }
         }

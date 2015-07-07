@@ -1,5 +1,7 @@
 ﻿using IonFar.SharePoint.Migration;
-using IonFar.SharePoint.Migration.Providers;
+using IonFar.SharePoint.Migration.Journals;
+using IonFar.SharePoint.Migration.Logs;
+using IonFar.SharePoint.Migration.Providers.Assembly;
 using IonFar.SharePoint.Migration.Services;
 using System;
 using System.Reflection;

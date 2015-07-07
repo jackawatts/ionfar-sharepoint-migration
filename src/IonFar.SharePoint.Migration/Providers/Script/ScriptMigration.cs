@@ -5,19 +5,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Script
 {
-    class ScriptMigration : IMigration
+    public class ScriptMigration : IMigration
     {
         // See: http://blogs.msdn.com/b/kebab/archive/2014/04/28/executing-powershell-scripts-from-c.aspx
         //      https://msdn.microsoft.com/en-us/library/ee706551(v=vs.85).aspx
 
-        string _filePath;
-        Dictionary<string, object> _variables;
+        private readonly string _filePath;
+        private readonly Dictionary<string, object> _variables;
 
         public ScriptMigration(string filePath, IDictionary<string,object> variables)
         {

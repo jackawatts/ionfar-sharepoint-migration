@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Script
 {
-    [System.Serializable]
+    [Serializable]
     public class ScriptException : Exception
     {
         public ScriptException() { }

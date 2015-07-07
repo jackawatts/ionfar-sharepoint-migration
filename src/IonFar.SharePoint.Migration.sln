@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.22823.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IonFar.SharePoint.Migration", "IonFar.SharePoint.Migration\IonFar.SharePoint.Migration.csproj", "{00B17940-1B52-4A22-933E-A00C37A48093}"
 EndProject
@@ -26,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicCodeMigration", "Examples\BasicCodeMigration\BasicCodeMigration.csproj", "{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicScriptMigration", "Examples\BasicScriptMigration\BasicScriptMigration.csproj", "{D4E6638C-71E4-48E0-A9F7-53C2C4D07A0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IonFar.SharePoint.Synchronization", "IonFar.SharePoint.Synchronization\IonFar.SharePoint.Synchronization.csproj", "{19AFBC93-E3A2-48E3-99BC-72614709CDC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{D4E6638C-71E4-48E0-A9F7-53C2C4D07A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E6638C-71E4-48E0-A9F7-53C2C4D07A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E6638C-71E4-48E0-A9F7-53C2C4D07A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19AFBC93-E3A2-48E3-99BC-72614709CDC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19AFBC93-E3A2-48E3-99BC-72614709CDC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19AFBC93-E3A2-48E3-99BC-72614709CDC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19AFBC93-E3A2-48E3-99BC-72614709CDC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

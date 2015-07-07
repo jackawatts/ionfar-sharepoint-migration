@@ -1,12 +1,7 @@
-﻿using Microsoft.SharePoint.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
+using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration.Sync
+namespace IonFar.SharePoint.Synchronization.Preprocessors
 {
     public class UrlTokenPreprocessor : ITextFilePreprocessor
     {

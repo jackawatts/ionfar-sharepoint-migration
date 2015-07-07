@@ -1,15 +1,15 @@
-﻿using IonFar.SharePoint.Migration;
-using IonFar.SharePoint.Migration.Providers;
+﻿using System.Linq;
+using IonFar.SharePoint.Migration;
+using IonFar.SharePoint.Migration.Journals;
+using IonFar.SharePoint.Migration.Providers.Script;
 using IonFar.SharePoint.Migration.Services;
-using IonFar.SharePoint.Migration.Sync;
-using Microsoft.SharePoint.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Security;
 using System.Web;
+using IonFar.SharePoint.Synchronization;
+using IonFar.SharePoint.Synchronization.Preprocessors;
+using IonFar.SharePoint.Synchronization.Providers;
+
 
 namespace TestApplication
 {

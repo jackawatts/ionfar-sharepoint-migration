@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SharePoint.Client;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Journals
 {
     /// <summary>
     /// Enables multiple executions of idempotent migrations.
@@ -15,7 +11,8 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <summary>
         /// Always returns an empty array.
         /// </summary>
-        /// <param name="clientContext">Context to the SharePoint server</param>
+        /// <param name="contextManager">The ContextManager.</param>
+        /// <param name="log">The UpgradeLog.</param>
         public IEnumerable<MigrationInfo> GetExecutedMigrations(IContextManager contextManager, IUpgradeLog log)
         {
             return new MigrationInfo[0];
@@ -24,7 +21,8 @@ namespace IonFar.SharePoint.Migration.Providers
         /// <summary>
         /// Simply returns, and does not store the migration
         /// </summary>
-        /// <param name="clientContext">Context to the SharePoint server</param>
+        /// <param name="contextManager">The contentManager.</param>
+        /// <param name="log">The UpgradeLog.</param>
         /// <param name="migration">Migration that has been run</param>
         public MigrationInfo StoreExecutedMigration(IContextManager contextManager, IUpgradeLog log, IMigration migration)
         {

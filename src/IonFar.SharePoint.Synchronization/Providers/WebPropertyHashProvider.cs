@@ -1,13 +1,11 @@
-﻿using Microsoft.SharePoint.Client;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using IonFar.SharePoint.Migration;
+using Newtonsoft.Json;
 
-namespace IonFar.SharePoint.Migration.Sync
+namespace IonFar.SharePoint.Synchronization.Providers
 {
     /// <summary>
     /// A hash provider that stores uploaded file hashs in a property bag of the web.
@@ -16,11 +14,8 @@ namespace IonFar.SharePoint.Migration.Sync
     {
         private const string DefaultPropertyBagKey = "ION_UploadHash";
 
-        private static HashAlgorithm DefaultHashAlgorithm = SHA256.Create();
-
-        HashAlgorithm _hashAlgorithm;
-        Dictionary<string, string> _hashValues;
-        string _propertyBagKey;
+        private Dictionary<string, string> _hashValues;
+        private readonly string _propertyBagKey;
 
         /// <summary>
         /// Creates a hash provider for the specified web, with the default hash algorithm (SHA256) and property bag key.
@@ -38,8 +33,6 @@ namespace IonFar.SharePoint.Migration.Sync
         public WebPropertyHashProvider(string propertyBagKey, HashAlgorithm hashAlgorithm)
         {
             _propertyBagKey = propertyBagKey ?? DefaultPropertyBagKey;
-            _hashAlgorithm = hashAlgorithm ?? DefaultHashAlgorithm;
-
         }
 
         /// <summary>

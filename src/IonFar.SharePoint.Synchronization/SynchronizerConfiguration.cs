@@ -1,12 +1,11 @@
-﻿using IonFar.SharePoint.Migration.Services;
-using IonFar.SharePoint.Migration.Sync;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IonFar.SharePoint.Migration;
+using IonFar.SharePoint.Migration.Logs;
+using IonFar.SharePoint.Migration.Services;
+using IonFar.SharePoint.Synchronization.Providers;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Represents the configuration of a Synchronizer

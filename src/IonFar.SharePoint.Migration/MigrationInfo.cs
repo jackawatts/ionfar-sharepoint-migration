@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Reflection;
-using Microsoft.SharePoint.Client;
+using IonFar.SharePoint.Migration.Providers.Assembly;
 using Newtonsoft.Json;
 
 namespace IonFar.SharePoint.Migration

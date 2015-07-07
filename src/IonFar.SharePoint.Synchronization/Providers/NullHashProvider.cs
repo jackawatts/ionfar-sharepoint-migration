@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration.Sync
+namespace IonFar.SharePoint.Synchronization.Providers
 {
     /// <summary>
     /// A hash provider that does not store anything, and always returns an empty hash.
@@ -29,7 +25,7 @@ namespace IonFar.SharePoint.Migration.Sync
         /// <param name="contextManager">Provides the current SharePoint context</param>
         /// <param name="logger">To log messages to the migrator</param>
         /// <param name="serverRelativeUrl">Ignored</param>
-        /// <param name="hash">Ignored</param>
+        /// <param name="localHash">Ignored</param>
         public void StoreFileHash(IContextManager contextManager, IUpgradeLog logger, string serverRelativeUrl, byte[] localHash)
         {
         }

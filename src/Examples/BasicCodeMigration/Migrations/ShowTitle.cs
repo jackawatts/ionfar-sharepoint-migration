@@ -1,5 +1,6 @@
 ﻿using System;
 using IonFar.SharePoint.Migration;
+using IonFar.SharePoint.Migration.Providers.Assembly;
 using Microsoft.SharePoint.Client;
 
 namespace BasicCodeMigration.Migrations

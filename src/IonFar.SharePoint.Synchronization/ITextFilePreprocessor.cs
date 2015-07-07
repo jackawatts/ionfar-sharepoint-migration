@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Preprocessor that modifies text files before they are uploaded.

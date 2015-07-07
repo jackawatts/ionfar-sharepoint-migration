@@ -1,11 +1,7 @@
-﻿using Microsoft.SharePoint.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.SharePoint.Client;
 
-namespace IonFar.SharePoint.Migration
+namespace IonFar.SharePoint.Synchronization
 {
     /// <summary>
     /// Static methods to modify URL paths.
@@ -118,7 +114,7 @@ namespace IonFar.SharePoint.Migration
             }
             string combined = path1;
             var last = path1[path1.Length - 1];
-            if (last != SPUrlUtility.UrlSeparatorChar && last != SPUrlUtility.AltUrlSeparatorChar)
+            if (last != UrlSeparatorChar && last != AltUrlSeparatorChar)
             {
                 combined += "/";
             }

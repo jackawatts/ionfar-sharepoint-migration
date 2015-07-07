@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Script
 {
-    class ScriptHostUI : PSHostUserInterface
+    public class ScriptHostUI : PSHostUserInterface
     {
         PSHostRawUserInterface _hostRawUI;
         IUpgradeLog _log;

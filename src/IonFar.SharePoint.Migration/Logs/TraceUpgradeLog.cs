@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-namespace IonFar.SharePoint.Migration.Services
+namespace IonFar.SharePoint.Migration.Logs
 {
     /// <summary>
     /// A log that writes to System.Diagnostics.
     /// </summary>
     public class TraceUpgradeLog : IUpgradeLog
     {
-        const string DefaultSourceName = "IonFar.SharePoint";
-        TraceSource _source;
+        private const string DefaultSourceName = "IonFar.SharePoint";
+        private readonly TraceSource _source;
 
         /// <summary>
         /// Creates a logger to the default source "IonFar.SharePoint"

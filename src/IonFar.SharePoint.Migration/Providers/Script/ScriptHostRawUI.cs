@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Management.Automation.Host;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IonFar.SharePoint.Migration.Providers
+namespace IonFar.SharePoint.Migration.Providers.Script
 {
-    class ScriptHostRawUI : PSHostRawUserInterface
+    internal class ScriptHostRawUI : PSHostRawUserInterface
     {
         /*
 https://msdn.microsoft.com/en-us/library/ee706570(v=vs.85).aspx
@@ -30,7 +26,6 @@ FlushInputBuffer
             get
             {
                 return ConsoleColor.Black;
-                //throw new NotImplementedException("get_BackgroundColor not implemented");
             }
 
             set

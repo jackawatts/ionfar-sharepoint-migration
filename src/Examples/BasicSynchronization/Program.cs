@@ -1,15 +1,11 @@
-﻿using IonFar.SharePoint.Migration;
+﻿using IonFar.SharePoint.Migration.Logs;
 using IonFar.SharePoint.Migration.Services;
-using IonFar.SharePoint.Migration.Sync;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IonFar.SharePoint.Synchronization;
 
 namespace BasicSynchronization
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {

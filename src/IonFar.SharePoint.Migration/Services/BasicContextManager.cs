@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SharePoint.Client;
-using System.Net;
 using System.Security;
 
 namespace IonFar.SharePoint.Migration.Services
@@ -16,7 +11,7 @@ namespace IonFar.SharePoint.Migration.Services
     {
         ClientContext _context;
         IUpgradeLog _log;
-        string _password;
+        readonly string _password;
         SecureString _securePassword;
         string _sharePointUrl;
         string _userName;
@@ -26,7 +21,7 @@ namespace IonFar.SharePoint.Migration.Services
         /// </summary>
         /// <param name="sharePointUrl">URL to use for the context</param>
         /// <param name="userName">User name to use</param>
-        /// <param name="userName">Password to use</param>
+        /// <param name="password">Password to use</param>
         public BasicContextManager(string sharePointUrl, string userName, string password)
         {
             _sharePointUrl = sharePointUrl;
@@ -40,7 +35,7 @@ namespace IonFar.SharePoint.Migration.Services
         /// </summary>
         /// <param name="sharePointUrl">URL to use for the context</param>
         /// <param name="userName">User name to use</param>
-        /// <param name="userName">Password to use</param>
+        /// <param name="securePassword">Password to use</param>
         public BasicContextManager(string sharePointUrl, string userName, SecureString securePassword)
         {
             _sharePointUrl = sharePointUrl;
@@ -131,11 +126,11 @@ namespace IonFar.SharePoint.Migration.Services
             }
 
             #region IDisposable Support
-            private bool disposedValue = false; // To detect redundant calls
+            private bool _disposedValue = false; // To detect redundant calls
 
             protected virtual void Dispose(bool disposing)
             {
-                if (!disposedValue)
+                if (!_disposedValue)
                 {
                     if (disposing)
                     {
@@ -146,7 +141,7 @@ namespace IonFar.SharePoint.Migration.Services
                         log.Verbose("Disposing context {0}", clientContext.Url);
                         clientContext.Dispose();
                     }
-                    disposedValue = true;
+                    _disposedValue = true;
                 }
             }
 

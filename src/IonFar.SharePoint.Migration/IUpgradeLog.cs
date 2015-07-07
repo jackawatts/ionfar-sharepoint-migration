@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IonFar.SharePoint.Migration
+﻿namespace IonFar.SharePoint.Migration
 {
     /// <summary>
     /// Interface for logging

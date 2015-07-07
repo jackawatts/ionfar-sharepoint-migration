@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration.Sync
+namespace IonFar.SharePoint.Synchronization.Preprocessors
 {
     /// <summary>
     /// Substitutes variables for values in text files
     /// </summary>
     public class VariableSubstitutionPreprocessor : ITextFilePreprocessor
     {
-        private readonly IDictionary<string, string> variables;
-        private static readonly Regex tokenRegex = new Regex(@"\$(?<variableName>\w+)\$");
+        private readonly IDictionary<string, string> _variables;
+        private static readonly Regex TokenRegex = new Regex(@"\$(?<variableName>\w+)\$");
 
         /// <summary>
         /// Initializes a new instance of the VariableSubstitutionPreprocessor class.
@@ -22,7 +20,7 @@ namespace IonFar.SharePoint.Migration.Sync
         /// <param name="variables">The variables.</param>
         public VariableSubstitutionPreprocessor(IDictionary<string, string> variables)
         {
-            this.variables = variables;
+            this._variables = variables;
         }
 
         /// <summary>
@@ -30,7 +28,7 @@ namespace IonFar.SharePoint.Migration.Sync
         /// </summary>
         public string Process(IContextManager contextManager, IUpgradeLog logger, string contents)
         {
-            return tokenRegex.Replace(contents, match => ReplaceToken(match, variables));
+            return TokenRegex.Replace(contents, match => ReplaceToken(match, _variables));
         }
 
         private static string ReplaceToken(Match match, IDictionary<string, string> variables)

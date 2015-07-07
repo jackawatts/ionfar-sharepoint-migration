@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using IonFar.SharePoint.Migration;
 
-namespace IonFar.SharePoint.Migration.Sync
+namespace IonFar.SharePoint.Synchronization.Preprocessors
 {
     internal class StreamPreprocessor : IDisposable
     {
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue = false; // To detect redundant calls
 
-        System.IO.Stream _inputStream;
+        readonly System.IO.Stream _inputStream;
         IEnumerable<ITextFilePreprocessor> _preprocessors;
-        System.IO.Stream _outputStream;
+        readonly System.IO.Stream _outputStream;
 
         public StreamPreprocessor(IContextManager contextManager, IUpgradeLog logger, System.IO.Stream inputStream, IEnumerable<ITextFilePreprocessor> preprocessors)
         {
             _inputStream = inputStream;
             _preprocessors = preprocessors;
 
-            if (_preprocessors.Count() > 0)
+            if (_preprocessors.Any())
             {
                 using (var reader = new System.IO.StreamReader(_inputStream, Encoding.UTF8))
                 {
@@ -49,7 +49,7 @@ namespace IonFar.SharePoint.Migration.Sync
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -58,7 +58,7 @@ namespace IonFar.SharePoint.Migration.Sync
                         _outputStream.Dispose();
                     }
                 }
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
     }

@@ -104,11 +104,14 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IonFar.SharePoint.Migration\IonFar.SharePoint.Migration.csproj">
-      <Project>{00b17940-1b52-4a22-933e-a00c37a48093}</Project>
+      <Project>{00B17940-1B52-4A22-933E-A00C37A48093}</Project>
       <Name>IonFar.SharePoint.Migration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\IonFar.SharePoint.Synchronization\IonFar.SharePoint.Synchronization.csproj">
+      <Project>{19AFBC93-E3A2-48E3-99BC-72614709CDC6}</Project>
+      <Name>IonFar.SharePoint.Synchronization</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Files\Style Library\IonFar.Example.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
