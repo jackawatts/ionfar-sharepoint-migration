@@ -26,7 +26,7 @@ namespace TestApplication
             string username = args[1];
             string password = args[2];
 
-            TestFolderUpload(webUrl, username, password);
+//            TestFolderUpload(webUrl, username, password);
             TestScriptMigration(webUrl, username, password);
 
             Console.WriteLine();

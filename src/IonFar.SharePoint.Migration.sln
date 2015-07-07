@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "Examples
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicMigration", "Examples\BasicMigration\BasicMigration.csproj", "{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicSynchronization", "Examples\BasicSynchronization\BasicSynchronization.csproj", "{E7C24393-5AE4-461D-902B-17450FFBB026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7C24393-5AE4-461D-902B-17450FFBB026}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C24393-5AE4-461D-902B-17450FFBB026}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C24393-5AE4-461D-902B-17450FFBB026}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C24393-5AE4-461D-902B-17450FFBB026}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,5 +53,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{48E143F9-8304-4A37-BB3F-ED1848771DF2} = {F5607AB4-6E5D-4C54-869D-CF09EED0AEF7}
 		{4D7383D9-5EF3-4A3F-A738-A78FDE6A72E8} = {F5607AB4-6E5D-4C54-869D-CF09EED0AEF7}
+		{E7C24393-5AE4-461D-902B-17450FFBB026} = {F5607AB4-6E5D-4C54-869D-CF09EED0AEF7}
 	EndGlobalSection
 EndGlobal

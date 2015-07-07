@@ -262,7 +262,7 @@ namespace IonFar.SharePoint.Migration.Services
 
                 var assembly = Assembly.GetExecutingAssembly();
                 var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _configuration.Log.Information("IonFar SharePoint Migrator v" + fvi.FileVersion);
+                _configuration.Log.Information("IonFar SharePoint Synchronizer v" + fvi.FileVersion);
 
                 _configuration.Log.Information("Uploading folder '{0}'", destinationPrefixedUrl);
 
