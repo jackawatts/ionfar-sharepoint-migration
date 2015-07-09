@@ -105,9 +105,11 @@ namespace TestApplication
             sync.EnsureSiteScriptLink("ScriptLink.jQuery", jqueryResult.ServerRelativeUrl, 10000);
 
             var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
-            sync.EnsureSiteScriptLink("ScriptLink.ION_Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
+            //            sync.EnsureSiteScriptLink("ScriptLink.IonFar.Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
+            sync.EnsureSiteScriptLink("ScriptLink.IonFar.Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
+
         }
-        
+
 
     }
 }

@@ -73,7 +73,7 @@ namespace IonFar.SharePoint.Migration.Providers
                 //var initial = InitialSessionState.Create();
                 //initial.ImportPSModule("OfficeDevPnP.PowerShell.Commands");
 
-                using (var pipeline = runspace.CreatePipeline("Set-ExecutionPolicy Unrestricted -Scope CurrentUser"))
+                using (var pipeline = runspace.CreatePipeline("Set-ExecutionPolicy Unrestricted -Scope Process -Confirm:$false -Force"))
                 {
                     var output = pipeline.Invoke();
                 }
