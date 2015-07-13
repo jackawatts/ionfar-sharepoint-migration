@@ -1,5 +1,5 @@
-﻿//(function () {
-//    $(document).ready(function () {
-//        $(".ms-promlink-parttitle").text("$Message$ '~sitecollection/'");
-//    });
-//})();
+﻿(function () {
+    $(document).ready(function () {
+        $(".ms-promlink-parttitle").text("$Message$ '~sitecollection/'");
+    });
+})();

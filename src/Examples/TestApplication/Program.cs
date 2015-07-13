@@ -100,13 +100,13 @@ namespace TestApplication
             var folder = sync.EnsureFolder(scriptsDestinationFolder);
             var result = sync.SynchronizeFolder(scriptsSource, scriptsDestinationFolder);
 
-            // Also use the hash in a script link
+            // Use the hash in a script link
             var jqueryResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("jquery-2.1.4.min.js", StringComparison.InvariantCultureIgnoreCase));
-            sync.EnsureSiteScriptLink("ScriptLink.jQuery", jqueryResult.ServerRelativeUrl, 10000);
+            sync.EnsureSiteScriptLink("ScriptLink.jQuery", "~sitecollection/_catalogs/masterpage/scripts/jquery-2.1.4.min.js", 10000);
 
             var exampleResult = result.Files.First(i => i.ServerRelativeUrl.EndsWith("ionfar.example.js", StringComparison.InvariantCultureIgnoreCase));
             //            sync.EnsureSiteScriptLink("ScriptLink.IonFar.Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
-            sync.EnsureSiteScriptLink("ScriptLink.IonFar.Example", exampleResult.ServerRelativeUrl + "?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
+            sync.EnsureSiteScriptLink("ScriptLink.IonFar.Example", "~sitecollection/_catalogs/masterpage/scripts/ionfar.example.js?v=" + HttpServerUtility.UrlTokenEncode(exampleResult.Hash), 10100);
 
         }
 
