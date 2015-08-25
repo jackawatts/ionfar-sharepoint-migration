@@ -172,12 +172,19 @@ namespace IonFar.SharePoint.Migration.Providers
                     }
                     if (shell.HadErrors)
                     {
-                        logger.Error("Script had errors. State: {0}", shell.InvocationStateInfo.State);
-                        foreach (var error in shell.Streams.Error)
+                        if (shell.Streams.Error.Count > 0)
                         {
-                            logger.Error("{0}", error);
+                            logger.Error("Script had non-terminating errors. Suppress errors to allow script to run. State: {0}", shell.InvocationStateInfo.State);
+                            foreach (var error in shell.Streams.Error)
+                            {
+                                logger.Error("{0}", error);
+                            }
+                            throw new ScriptException(string.Format("{0}. {1}", shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason));
                         }
-                        throw new ScriptException(string.Format("{0}. {1}", shell.InvocationStateInfo.State, shell.InvocationStateInfo.Reason));
+                        else
+                        {
+                            logger.Warning("Script had non-terminating errors that were suppressed (error stream was empty). State: {0}", shell.InvocationStateInfo.State);
+                        }
                     }
                     logger.Verbose("Script '{0}' complete", _filePath);
                 }
