@@ -109,13 +109,16 @@
     <Compile Include="UploadInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="IonFar.SharePoint.Synchronization.nuspec">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\IonFar.SharePoint.Migration\IonFar.SharePoint.Migration.csproj">
       <Project>{00b17940-1b52-4a22-933e-a00c37a48093}</Project>
       <Name>IonFar.SharePoint.Migration</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -125,4 +128,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <TFSBaseBuildYear>2015</TFSBaseBuildYear>
+  </PropertyGroup>
+  <Import Project="..\TFSBuildNumber.targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
+  </Target>
+  <Target Name="AfterBuild" DependsOnTargets="ResetCSharpAssemblyInfoFile">
+  </Target>
 </Project>

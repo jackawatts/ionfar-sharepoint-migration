@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/jackawatts/ionfar-sharepoint-migration/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/jackawatts/ionfar-sharepoint-migration</projectUrl>
+    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright © Jack Watts 2015</copyright>
+    <tags>SharePoint CSOM Synchronization SharePointOnline Office365</tags>
+    <dependencies>
+      <dependency id="IonFar.SharePoint.Migration" version="$version$" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\LICENSE" target="LICENSE" />
+  </files>
+</package>
