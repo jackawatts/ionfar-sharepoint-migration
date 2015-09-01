@@ -17,5 +17,6 @@
   </metadata>
   <files>
     <file src="..\..\LICENSE" target="LICENSE" />
+    <file src="..\IonFar.SharePoint.Synchronization\bin\$configuration$\IonFar.SharePoint.Synchronization.dll" target="lib\net45" />
   </files>
 </package>
