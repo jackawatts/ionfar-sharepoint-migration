@@ -131,7 +131,7 @@
   <PropertyGroup>
     <TFSBaseBuildYear>2015</TFSBaseBuildYear>
   </PropertyGroup>
-  <Import Project="..\TFSBuildNumber.targets" />
+  <Import Project="..\VSOBuildNumber.targets" />
   <Target Name="BeforeBuild" DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="ResetCSharpAssemblyInfoFile">

@@ -2,31 +2,64 @@
 <Project ToolsVersion="4.0"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- TFSBuildNumber.targets, Version 1.4 - May, 2015 -->
+  <!-- VSOBuildNumber.targets, Version 1.5 - Sept, 2015 -->
 
-  <!-- Updates build numbers in projects based on the TFS build number.
+  <!-- Copyright 2010-2015 Sly Gryphon. Subject to the Microsoft Reciprocal License. All other rights reserved. -->
+
+  <!-- 
+       VSO Build Number
+       ================
+       
+       Updates build numbers in projects based on the VSO (or TFS XAML) build number.
   
-       Supports:
-         - Extracting the major/minor versions from C# version attributes in an 
+  
+       == Features ==
+       
+         - Generates build numbers in the format "Major.Minor.Build.Revision"
+         - Major and Minor: Extracted from C# AssemblyFileVersion attributes in an 
            existing file (defaults to Properties\AssemblyInfo.cs).
-         - Updating C# version attributes in the info file.
-         - Writing build number into a plain Version.txt file in the project root
+         - Build and Revision: 
+           - If running on VSO or TFS (XAML build), values taken from the default 
+             BuildNumber format assigned by the server. The server BuildNumber, 
+             with an extra prefix in TFS, consists of the date, plus an increasing 
+             Revision number.
+           - If running locally (developer build), the current date is used,
+             with Revision set to 0.
+           - The date is converted into a build number by joining to year offset
+             from a base year, plus month, plus day. 
+             e.g. 20150929 with year offset 2015 gives build 929
+                  20150929 with year offset 2014 gives build 10929
+         - Can updates C# version attributes in the info file (default AssemblyInfo.cs).
+         - Can write build number into a plain Version.txt file in the project root
            (e.g. for copying to output as content along with web site files)
          - Reset the AssemblyInfo.cs file after the build (so it isn't
            constantly being updated in version control, including TFS 2012
-           local workspaces).
+           local workspaces or git).
          - If assembly info file needs to be Read Only (so that older TFS source
            control doesn't pick it up as a change) then can unset/set the
            read only flag on the file.
          - Also updates AssemblyInformationalVersion, useful for NuGet 
            packaging.
-           
-       To use:
+             
+             
+       == Note ==
        
-       1. Include TFSBuildNumber.targets in your solution, probably in
-          a shared location.
+       If you change the default build number format for the server (VSO or 
+       TFS XAML), then you need to also adjust this script.
+       
+       The default formats, if you need to reset them, are:
+       
+       - VSO, Build number format = "$(date:yyyyMMdd)$(rev:.r)" 
+       - TFS XAML, Build number format =  "$(BuildDefinitionName)_$(Date:yyyyMMdd)$(Rev:.r)"
+             
+           
+       == Instructions ==
+       
+       1. Include VSOBuildNumber.targets in your solution, probably in
+          a shared location at the root.
           
-       2. Edit .csproj files to Import the TFSBuildNumber.targets project.
+       2. Edit .csproj files to Import the VSOBuildNumber.targets project
+          (adjust the path in the example below as needed).
        
        3. Add BeforeBuild target to the .csproj, with a dependency on
           the GetMajorMinorFromCSharpAssemblyInfoFile task to get the major/minor
@@ -43,23 +76,36 @@
           to reset the changes (if you don't want to check in changes to AssemblyInfo.cs
           after every local build).
           
-       5. Set the TFSBaseBuild property in the .csproj file (defaults to 2010).
+       5. Set the TFSBaseBuildYear property in the .csproj file (defaults to 2015).
           By setting the base year you will have nicely increasing version
           numbers.
           
-          You can update the base year whenever you change the major or
-          minor version number.
+          You should update the base year whenever you change the Major or
+          Minor version number.
           
-       6. If your AssemblyInfo.cs file is usually read only, then you need to set
-          the additional property <TFSSetReadOnly>true</TFSSetReadOnly> to handle this.
+          NOTE: The maximum value supported for offset is 6, i.e. 7 years after
+          the base year (due to maximum value of a version number component 
+          of 65536). Provided you update the base year when changing Major or
+          Minor you should never reach this limit.
+
+       6. For VSO builds, in the Visual Studio Build step, add MSBuild Arguments:
+       
+            /p:BuildNumber="$(Build.BuildNumber)"
+          
+          If you don't add this argument, then the build will run as developer
+          and not include the correct Revision number.
           
        7. For NuGet packaging support, add the following to AssemblyInfo.cs:
        
-          [assembly: AssemblyInformationalVersion("1.0.0.0")]
+            [assembly: AssemblyInformationalVersion("1.0.0.0")]
           
           This will be replaced with the full version number from AssemblyFileVersion
           (otherwise, NuGet uses AssemblyVersion, which only has major/minor numbers).
-          
+
+       8. If your AssemblyInfo.cs file is usually read only (older TFS source 
+          control), then you need to set the additional property 
+          <TFSSetReadOnly>true</TFSSetReadOnly> to handle this.
+                    
        NOTE: If you don't want to use GetMajorMinorFromCSharpAssemblyInfoFile,
        an alternative is to set the TFSMajorBuildNumber and TFSMinorBuildNumber
        properties in your .csproj file.
@@ -67,9 +113,9 @@
        Example to insert in your .csproj file (change TFSBaseBuildYear as desired):
        
        <PropertyGroup>
-         <TFSBaseBuildYear>2010</TFSBaseBuildYear>
+         <TFSBaseBuildYear>2015</TFSBaseBuildYear>
        </PropertyGroup>
-       <Import Project="TFSBuildNumber.targets"/>
+       <Import Project="..\VSOBuildNumber.targets"/>
        <Target Name="BeforeBuild"
           DependsOnTargets="GetMajorMinorFromCSharpAssemblyInfoFile;WriteProjectTextAssemblyVersionFile;UpdateCSharpAssemblyInfoFile">
        </Target>
@@ -100,6 +146,31 @@
        server. MSBuild 4.0 really is quite wonderful!"
        -->
 
+  <!--
+Microsoft Reciprocal License (MS-RL)
+
+This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+
+1. Definitions
+ The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
+ A "contribution" is the original software, or any additions or changes to the software.
+ A "contributor" is any person that distributes its contribution under this license.
+ "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+2. Grant of Rights
+ (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+ (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+
+3. Conditions and Limitations
+ (A) Reciprocal Grants- For any file you distribute that contains code from the software (in source code or binary format), you must provide recipients the source code to that file along with a copy of this license, which license will govern that file. You may license other files that are entirely your own work and do not contain code from the software under any terms you choose.
+ (B) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+ (C) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
+ (D) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
+ (E) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
+ (F) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+  -->
+
   <PropertyGroup>
     <!-- Figure out where the TFS build tasks are. -->
     <TeamBuildRefPath Condition="'$(TeamBuildRefPath)'==''">$(VS100COMNTOOLS)..\IDE\PrivateAssemblies\</TeamBuildRefPath>
@@ -108,6 +179,7 @@
          ones that tell me I'm running under TFS Build.-->
     <WintellectBuildType>DEVELOPERBUILD</WintellectBuildType>
     <WintellectBuildType Condition="'$(BuildUri)'!='' and '$(TeamFoundationServerUrl)'!=''">TFSBUILD</WintellectBuildType>
+    <WintellectBuildType Condition="'$(BuildNumber)'!=''">VSOBUILD</WintellectBuildType>
   </PropertyGroup>
 
   <!-- Set up the dependency on the InitializeBuildProperties task only 
@@ -133,7 +205,7 @@
       <Output TaskParameter="BuildDefinitionUri" PropertyName="BuildDefinitionUri" />
       <Output TaskParameter="BuildNumber" PropertyName="BuildNumber" />
     </GetBuildProperties>
-    <Message Text="Build definition '$(BuildDefinitionName)', number '$(BuildNumber)', uri '$(BuildDefinitionUri)'." />
+    <Message Text="TFS Build definition '$(BuildDefinitionName)', number '$(BuildNumber)', uri '$(BuildDefinitionUri)'." />
   </Target>
 
   <!-- The TFSBuildFileVersion target builds the string suitable for using to 
@@ -171,6 +243,27 @@
       <BuildDefSeparatorValue>_</BuildDefSeparatorValue>
       <!-- The separator between the date and revision.-->
       <DateVerSeparatorValue>.</DateVerSeparatorValue>
+    </PropertyGroup>
+
+    <Message Condition="'$(WintellectBuildType)'=='VSOBUILD'" Text="VSO BuildNumber '$(BuildNumber)'" />
+
+    <!-- The calculations when run on a VSO Build Server.-->
+    <PropertyGroup Condition="'$(WintellectBuildType)'=='VSOBUILD'">      
+      <!-- Get the date and version. ex: 20091107.14-->
+      <tmpFullDateAndVersion>$(BuildNumber)</tmpFullDateAndVersion>
+      <!-- Find the position where the date and version separator splits 
+           the string. -->
+      <tmpDateVerSepPos>$(tmpFullDateAndVersion.IndexOf($(DateVerSeparatorValue)))</tmpDateVerSepPos>
+      <!-- Grab the date. ex: 20081107-->
+      <tmpFullBuildDate>$(tmpFullDateAndVersion.SubString(0,$(tmpDateVerSepPos)))</tmpFullBuildDate>
+      <!-- Bump past the separator. -->
+      <tmpVerStartPos>$([MSBuild]::Add($(tmpDateVerSepPos),1))</tmpVerStartPos>
+      <!-- Get the revision string. ex: 14-->
+      <TFSBuildRevision>$(tmpFullDateAndVersion.SubString($(tmpVerStartPos)))</TFSBuildRevision>
+      <!-- Get the pieces so if someone wants to customize, they have them.-->
+      <TFSBuildYear>$(tmpFullBuildDate.SubString(0,4))</TFSBuildYear>
+      <TFSBuildMonth>$(tmpFullBuildDate.SubString(4,2))</TFSBuildMonth>
+      <TFSBuildDay>$(tmpFullBuildDate.SubString(6,2))</TFSBuildDay>
     </PropertyGroup>
 
     <!-- The calculations when run on a TFS Build Server.-->
