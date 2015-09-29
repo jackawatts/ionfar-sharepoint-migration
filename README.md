@@ -126,4 +126,9 @@ The source code includes examples of:
 * BasicSynchronization
 * TestApplication -- a more fully formed example with both migrations and sychronization
 
+Note that the TestApplication uses some PowerShell commands from the Office Dev PnP 
+PowerShell Commands, https://github.com/OfficeDev/PnP, which need to be downloaded and
+installed to fully run the example.
 
+Another useful library is the SharePoint Online Management Shell, 
+https://technet.microsoft.com/en-us/library/fp161372.aspx 

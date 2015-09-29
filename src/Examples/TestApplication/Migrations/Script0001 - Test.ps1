@@ -54,7 +54,7 @@ $SPContext.ExecuteQuery()
 Write-Output "Web (.NET): $($web.Title)"
 
 # Using PowerShell Cmdlets -- from parameters (could also use variable)
-#Import-Module OfficeDevPnP.PowerShell.Commands
+# Requires the Office Dev PnP PowerShell Commands, https://github.com/OfficeDev/PnP
 Connect-SPOnline –Url $Url -Credentials $Credentials
 $web = Get-SPOWeb
 Write-Output "Web (Cmdlet): $($web.Title)"

@@ -13,10 +13,12 @@
     <description>$description$</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright © Jack Watts 2015</copyright>
-    <tags>SharePoint CSOM Migration SharePointOnline Office365</tags>
+    <tags>SharePoint CSOM Synchronization SharePointOnline Office365</tags>
+    <dependencies>
+      <dependency id="IonFar.SharePoint.Migration" version="$version$" />
+    </dependencies>
   </metadata>
   <files>
     <file src="..\..\LICENSE" target="LICENSE" />
-    <file src="..\IonFar.SharePoint.Synchronization\bin\$configuration$\IonFar.SharePoint.Synchronization.dll" target="lib\net45" />
   </files>
 </package>
