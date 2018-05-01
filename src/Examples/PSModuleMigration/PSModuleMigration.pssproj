@@ -36,10 +36,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Migrations\Script0001 - Show Title.ps1" />
+    <Compile Include="RunFileSync.ps1" />
     <Compile Include="RunMigrations.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Files\Style Library\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Files\Style Library\IonFar.Example.css" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

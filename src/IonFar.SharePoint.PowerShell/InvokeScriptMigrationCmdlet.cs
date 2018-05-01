@@ -3,6 +3,7 @@ using IonFar.SharePoint.Migration.Journals;
 using IonFar.SharePoint.Migration.Logs;
 using IonFar.SharePoint.Migration.Providers.Script;
 using IonFar.SharePoint.Migration.Services;
+using System;
 using System.Management.Automation;
 
 namespace IonFar.SharePoint.PowerShell
@@ -27,9 +28,6 @@ namespace IonFar.SharePoint.PowerShell
         public SwitchParameter Force { get; set; }
 
         [Parameter]
-        public string WorkingDirectory { get; set; }
-
-        [Parameter]
         public string JournalPrefix { get; set; }
 
         protected override void ProcessRecord()
@@ -40,6 +38,7 @@ namespace IonFar.SharePoint.PowerShell
                 Journal = this.Force ? (IJournal)new NullJournal() : (IJournal)new WebPropertyBagJournal(),
                 ContextManager = new BasicContextManager(this.SiteUrl, this.UserName, this.Password)
             };
+
             config.MigrationProviders.Add(new ScriptMigrationProvider(this.ScriptDirectory));
 
             var migrator = new Migrator(config);
