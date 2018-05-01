@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace IonFar.SharePoint.PowerShell
 {
     [Cmdlet(VerbsLifecycle.Invoke, "ScriptMigration")]
+    [OutputType(typeof(MigrationResult))]
     public class InvokeScriptMigrationCmdlet: Cmdlet
     {
         [Parameter(Mandatory = true, ValueFromPipeline = true)]
@@ -47,7 +48,9 @@ namespace IonFar.SharePoint.PowerShell
             config.MigrationProviders.Add(new ScriptMigrationProvider(this.ScriptDirectory));
 
             var migrator = new Migrator(config);
-            migrator.PerformMigration();
+            var result = migrator.PerformMigration();
+
+            WriteObject(result);
         }
     }
 }
