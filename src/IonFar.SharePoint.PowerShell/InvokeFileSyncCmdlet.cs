@@ -11,22 +11,28 @@ namespace IonFar.SharePoint.PowerShell
     [OutputType(typeof(SynchronizationResult))]
     public class InvokeFileSyncCmdlet : Cmdlet
     {
-        [Parameter(Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(Mandatory = true,
+            ValueFromPipeline = true,
+            HelpMessage = "Target SharePoint site/web url")]
         public string SiteUrl { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "User account to run the migrations")]
         public string UserName { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "Password of the user account")]
         public string Password { get; set; }
 
-        [Parameter]
+        [Parameter(HelpMessage = "Full path to base working directory. Defaults to current directory if not specified")]
         public string BaseDirectory { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true, 
+            HelpMessage = "Source folder path relative to working directory")]
         public string SourcePath { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "Server relative destination SharePoint folder path. May use '~sitecollection/' or '~site/' prefix; the folder must already exist")]
         public string DestinationPath { get; set; }
 
         protected override void ProcessRecord()

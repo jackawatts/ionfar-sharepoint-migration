@@ -12,22 +12,27 @@ namespace IonFar.SharePoint.PowerShell
     [OutputType(typeof(MigrationResult))]
     public class InvokeScriptMigrationCmdlet: Cmdlet
     {
-        [Parameter(Mandatory = true, ValueFromPipeline = true)]
+        [Parameter(Mandatory = true, 
+            ValueFromPipeline = true,
+            HelpMessage = "Target SharePoint site/web url")]
         public string SiteUrl { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "User account to run the migrations")]
         public string UserName { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "Password of the user account")]
         public string Password { get; set; }
 
-        [Parameter(Mandatory = true)]
+        [Parameter(Mandatory = true,
+            HelpMessage = "Full path to scripts directory")]
         public string ScriptDirectory { get; set; }
 
-        [Parameter]
+        [Parameter(HelpMessage ="Runs all scripts even if they were executed before")]
         public SwitchParameter Force { get; set; }
 
-        [Parameter]
+        [Parameter(HelpMessage = "Specify a custom property bag prefix")]
         public string JournalPrefix { get; set; }
 
         protected override void ProcessRecord()

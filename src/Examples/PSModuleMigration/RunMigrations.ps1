@@ -18,4 +18,6 @@ param(
 
 Import-Module "$($PSScriptRoot)\..\..\IonFar.SharePoint.PowerShell\bin\Debug\IonFar.SharePoint.PowerShell.dll"
 
+Get-Help Invoke-ScriptMigration
+
 Invoke-ScriptMigration -SiteUrl $SiteUrl -UserName $UserName -Password $Password -ScriptDirectory "$($PSScriptRoot)\Migrations"
