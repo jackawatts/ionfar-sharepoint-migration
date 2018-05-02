@@ -18,9 +18,9 @@ param(
 
 Import-Module "$($PSScriptRoot)\..\..\IonFar.SharePoint.PowerShell\bin\Debug\IonFar.SharePoint.PowerShell.psd1"
 
-Get-Help Invoke-FileSync
+Get-Help Invoke-IonFarFileSync
 
-Invoke-FileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password `
+Invoke-IonFarFileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password `
 			-BaseDirectory "$($PSScriptRoot)" `
 			-SourcePath "Files\Style Library" `
 			-DestinationPath "~site/Style Library"

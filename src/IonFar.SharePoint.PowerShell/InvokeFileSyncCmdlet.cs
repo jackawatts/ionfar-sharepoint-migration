@@ -11,9 +11,9 @@ namespace IonFar.SharePoint.PowerShell
     /// <para type="synopsis">Runs IonFar file synchronisation</para>
     /// <para type="description">Synchronizes files from given source directory to target SharePoint folder.</para>
     /// <para type="description">Transfers only if the local file has changed, by comparing the hashes.</para>
-    /// <code>Invoke-FileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password -BaseDirectory "$($PSScriptRoot)" -SourcePath "Files\Style Library" -DestinationPath "~site/Style Library"</code>
+    /// <code>Invoke-IonFarFileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password -BaseDirectory "$($PSScriptRoot)" -SourcePath "Files\Style Library" -DestinationPath "~site/Style Library"</code>
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Invoke, "FileSync")]
+    [Cmdlet(VerbsLifecycle.Invoke, "IonFarFileSync")]
     [OutputType(typeof(SynchronizationResult))]
     public class InvokeFileSyncCmdlet : Cmdlet
     {

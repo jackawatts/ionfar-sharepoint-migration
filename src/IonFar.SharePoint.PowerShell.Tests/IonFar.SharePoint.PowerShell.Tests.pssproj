@@ -36,8 +36,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Files\" />
-    <Folder Include="Files\Style Library\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

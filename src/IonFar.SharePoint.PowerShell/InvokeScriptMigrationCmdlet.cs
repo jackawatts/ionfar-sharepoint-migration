@@ -3,7 +3,6 @@ using IonFar.SharePoint.Migration.Journals;
 using IonFar.SharePoint.Migration.Logs;
 using IonFar.SharePoint.Migration.Providers.Script;
 using IonFar.SharePoint.Migration.Services;
-using System;
 using System.Management.Automation;
 
 namespace IonFar.SharePoint.PowerShell
@@ -13,9 +12,9 @@ namespace IonFar.SharePoint.PowerShell
     /// <para type="description">Runs a series of deployment scripts against a provided SharePoint Online site.</para>
     /// <para type="description">By default, runs only the new scripts that weren't executed before.</para>
     /// <para type="description">This behaviour can be overriden by using -Force parameter.</para>
-    /// <code>Invoke-ScriptMigration -SiteUrl $SiteUrl -UserName $UserName -Password $Password -ScriptDirectory "$($PSScriptRoot)\Migrations"</code>
+    /// <code>Invoke-IonFarScriptMigration -SiteUrl $SiteUrl -UserName $UserName -Password $Password -ScriptDirectory "$($PSScriptRoot)\Migrations"</code>
     /// </summary>
-    [Cmdlet(VerbsLifecycle.Invoke, "ScriptMigration")]
+    [Cmdlet(VerbsLifecycle.Invoke, "IonFarScriptMigration")]
     [OutputType(typeof(MigrationResult))]
     public class InvokeScriptMigrationCmdlet: Cmdlet
     {
