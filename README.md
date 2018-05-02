@@ -117,6 +117,26 @@ var folder = sync.EnsureFolder(destinationFolder);
 var result = sync.SynchronizeFolder(sourcePath, destinationFolder);
 ```
 
+## Use PowerShell Module  
+
+The "IonFar.SharePoint.PowerShell" PowerShell module wraps the IonFar script migration and folder synchronization capabilities in two cmdlets. For projects that need a complete PowerShell based deployment solution, you can simply install the module from the PowerShell gallery.  
+
+```
+Install-Module "IonFar.SharePoint.PowerShell" -Scope CurrentUser -Force
+
+Import-Module "IonFar.SharePoint.PowerShell"
+
+# To run a script migration
+$migrationResult = Invoke-IonFarScriptMigration -SiteUrl $SiteUrl -UserName $UserName -Password $Password -ScriptDirectory "$($PSScriptRoot)\Migrations"
+
+# To run a file/folder synchronization
+$syncResult = Invoke-IonFarFileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password `
+			-BaseDirectory "$($PSScriptRoot)" `
+			-SourcePath "Files\Style Library" `
+			-DestinationPath "~site/Style Library"
+
+```
+
 ## Examples
 
 The source code includes examples of:
@@ -124,6 +144,7 @@ The source code includes examples of:
 * BasicCodeMigration
 * BasicScriptMigration
 * BasicSynchronization
+* PSModuleMigration
 * TestApplication -- a more fully formed example with both migrations and sychronization
 
 Note that the TestApplication uses some PowerShell commands from the Office Dev PnP 
