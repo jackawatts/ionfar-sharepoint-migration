@@ -16,9 +16,9 @@ param(
     [string] $Password
 )
 
-Import-Module "$($PSScriptRoot)\..\..\IonFar.SharePoint.PowerShell\bin\Debug\IonFar.SharePoint.PowerShell.psd1"
+Install-Module "IonFar.SharePoint.PowerShell" -Scope CurrentUser -Force
 
-Get-Help Invoke-IonFarFileSync
+Import-Module "IonFar.SharePoint.PowerShell"
 
 Invoke-IonFarFileSync -SiteUrl $SiteUrl -UserName $UserName -Password $Password `
 			-BaseDirectory "$($PSScriptRoot)" `
