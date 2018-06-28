@@ -28,16 +28,30 @@ namespace IonFar.SharePoint.PowerShell
         /// <summary>
         /// <para type="description">User account to run the migrations</para>
         /// </summary>
-        [Parameter(Mandatory = true,
+        [Parameter(Mandatory = false,
             HelpMessage = "User account to run the migrations")]
         public string UserName { get; set; }
 
         /// <summary>
         /// <para type="description">Password of the user account to run the migrations</para>
         /// </summary>
-        [Parameter(Mandatory = true,
+        [Parameter(Mandatory = false,
             HelpMessage = "Password of the user account")]
         public string Password { get; set; }
+
+        /// <summary>
+        /// <para type="description">App Principal Client ID</para>
+        /// </summary>
+        [Parameter(Mandatory = false,
+            HelpMessage = "App Principal client id for authentication")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// <para type="description">App Principal Client Secret</para>
+        /// </summary>
+        [Parameter(Mandatory = false,
+            HelpMessage = "App principal client secret for authentication")]
+        public string ClientSecret { get; set; }
 
         /// <summary>
         /// <para type="description">Full path to base working directory. Defaults to current directory if not specified</para>
@@ -63,9 +77,17 @@ namespace IonFar.SharePoint.PowerShell
         {
             var config = new SynchronizerConfiguration
             {
-                Log = new ConsoleUpgradeLog(true),
-                ContextManager = new BasicContextManager(this.SiteUrl, this.UserName, this.Password)
+                Log = new ConsoleUpgradeLog(true)
             };
+
+            if (string.IsNullOrEmpty(this.ClientId))
+            {
+                config.ContextManager = new BasicContextManager(this.SiteUrl, this.UserName, this.Password);
+            }
+            else
+            {
+                config.ContextManager = new AppOnlyContextManager(this.SiteUrl, this.ClientId, this.ClientSecret);
+            }
 
             var baseFolder = this.BaseDirectory;
             if (String.IsNullOrEmpty(baseFolder))

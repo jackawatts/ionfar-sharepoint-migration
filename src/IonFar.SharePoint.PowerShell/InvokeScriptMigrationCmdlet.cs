@@ -29,16 +29,30 @@ namespace IonFar.SharePoint.PowerShell
         /// <summary>
         /// <para type="description">User account to run the migrations</para>
         /// </summary>
-        [Parameter(Mandatory = true,
+        [Parameter(Mandatory = false,
             HelpMessage = "User account to run the migrations")]
         public string UserName { get; set; }
 
         /// <summary>
         /// <para type="description">Password of the user account to run the migrations</para>
         /// </summary>
-        [Parameter(Mandatory = true,
+        [Parameter(Mandatory = false,
             HelpMessage = "Password of the user account")]
         public string Password { get; set; }
+
+        /// <summary>
+        /// <para type="description">App Principal Client ID</para>
+        /// </summary>
+        [Parameter(Mandatory = false,
+            HelpMessage = "App Principal client id for authentication")]
+        public string ClientId { get; set; }
+
+        /// <summary>
+        /// <para type="description">App Principal Client Secret</para>
+        /// </summary>
+        [Parameter(Mandatory = false,
+            HelpMessage = "App principal client secret for authentication")]
+        public string ClientSecret { get; set; }
 
         /// <summary>
         /// <para type="description">Full path to scripts directory</para>
@@ -61,12 +75,25 @@ namespace IonFar.SharePoint.PowerShell
 
         protected override void ProcessRecord()
         {
+            if(string.IsNullOrEmpty(this.UserName) && string.IsNullOrEmpty(this.Password))
+            {
+                throw new System.Exception("Either UserName/Password or ClientId/ClientSecret must provided for authentication");
+            }
+
             var config = new MigratorConfiguration
             {
                 Log = new ConsoleUpgradeLog(true),
-                Journal = this.Force ? (IJournal)new NullJournal() : (IJournal)new WebPropertyBagJournal(),
-                ContextManager = new BasicContextManager(this.SiteUrl, this.UserName, this.Password)
+                Journal = this.Force ? (IJournal)new NullJournal() : (IJournal)new WebPropertyBagJournal()
             };
+
+            if(string.IsNullOrEmpty(this.ClientId))
+            {
+                config.ContextManager = new BasicContextManager(this.SiteUrl, this.UserName, this.Password);
+            }
+            else
+            {
+                config.ContextManager = new AppOnlyContextManager(this.SiteUrl, this.ClientId, this.ClientSecret);
+            }
 
             config.MigrationProviders.Add(new ScriptMigrationProvider(this.ScriptDirectory));
 
