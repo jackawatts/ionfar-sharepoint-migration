@@ -75,6 +75,11 @@ namespace IonFar.SharePoint.PowerShell
 
         protected override void ProcessRecord()
         {
+            if (string.IsNullOrEmpty(this.UserName) && string.IsNullOrEmpty(this.ClientId))
+            {
+                throw new System.Exception("Either UserName/Password or ClientId/ClientSecret must provided for authentication");
+            }
+
             var config = new SynchronizerConfiguration
             {
                 Log = new ConsoleUpgradeLog(true)
